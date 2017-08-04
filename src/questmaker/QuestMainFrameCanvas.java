@@ -38,10 +38,30 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                 //pozor na MouseOverlapsSquare() v QuestBubble, hodnota 20 je tam nahardkodena
                 g.drawRect(qb.posX, qb.posY, qb.bubbleSize, 20); 
                 g.drawString(qb.questName, qb.posX, qb.posY+18);
+                
+                if (!qb.quest.inputs.isEmpty()) {
+                    
+                    for (int j = 0; j < qb.quest.inputs.size(); j++) {
+                        QuestInput qi = qb.quest.inputs.get(j);
+                        g.setColor(qi.color);
+                        g.drawRect(qi.posX, qi.posY, qi.size, qi.size);
+                    }  
+                }
+                
+                if (!qb.quest.outputs.isEmpty()) {
+                    for (int j = 0; j < qb.quest.outputs.size(); j++) {
+                        QuestOutput qi = qb.quest.outputs.get(j);
+                        g.setColor(qi.color);
+                        g.drawRect(qi.posX, qi.posY, qi.size, qi.size);
+                    }  
+                }
+                
 
             }
         }
     }
+    
+    
     
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -82,9 +102,16 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
     @Override
     public void mouseDragged(MouseEvent e) {
         if (mouseButtonHold) {
+            System.out.println("Mouse draggged");
             tempQuestBubble.posX = e.getX() - tempQuestBubble.bubbleSize/2;
             //NAHARDKODENE!!!!!!!!!
             tempQuestBubble.posY = e.getY() - 10;
+            for (int i = 0; i < tempQuestBubble.quest.inputs.size(); i++) {
+                tempQuestBubble.quest.inputs.get(i).updatePosition();
+            }
+            for (int i = 0; i < tempQuestBubble.quest.outputs.size(); i++) {
+                tempQuestBubble.quest.outputs.get(i).updatePosition();
+            }
             this.repaint();
         }
     }
@@ -96,14 +123,12 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
             
             QuestBubble tempQuestBubble = selectBubbleOnMouseOver(e.getPoint());
             
-            if (tempQuestBubble == null && lastMouseOver != null) {
-                System.out.println("Nie som cez bubble");
+            if (tempQuestBubble == null && lastMouseOver != null) {             
                 lastMouseOver.bubbleColor = Color.GREEN;
                 lastMouseOver = null;
                 this.repaint();
             }
             if(tempQuestBubble != null) {
-                System.out.println("Som cez bubble");
                 lastMouseOver = tempQuestBubble;
                 tempQuestBubble.bubbleColor = Color.BLUE;
                 this.repaint();
@@ -130,8 +155,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                             mouseCursor.x,
                             mouseCursor.y);
                 if (tmpdist < distanceToMiddle) {
-                    bestBubble = tempQuestBubble;
-                    System.out.println("Nieco to robi");
+                    bestBubble = tempQuestBubble;                  
                 }
                
             }  
@@ -139,7 +163,5 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
         
         return bestBubble;   
     }
-    
-    
     
 }

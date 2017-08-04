@@ -10,6 +10,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import java.util.LinkedList;
 import java.util.logging.Level;
@@ -30,6 +32,13 @@ public class QuestMainFrame extends Frame implements ActionListener{
         this.setSize(800, 600);
         this.setLocationRelativeTo(null);
         
+        addWindowListener(new WindowAdapter ()
+                                {   public void windowClosing(WindowEvent e) {
+                                    
+                                    System.exit(0);
+                                    }
+                                }
+        );
         questBubbles = new LinkedList<>();
         qmfc = new QuestMainFrameCanvas(questBubbles);
         this.add(qmfc);

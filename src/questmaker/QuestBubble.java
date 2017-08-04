@@ -23,7 +23,14 @@ public class QuestBubble {
         this.posY = posY;
         this.bubbleSize = questName.length() * 13;
         this.bubbleColor = bubbleColor;
-        this.quest = quest;
+        this.quest = new Quest(this);
+        this.quest.addInput();
+        this.quest.addInput();
+        this.quest.addInput();
+        this.quest.addOutput();
+        this.quest.addOutput();
+        this.quest.addOutput();
+        
     }
     
     public boolean MouseOverlaps(Point mousePosition) {
