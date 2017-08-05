@@ -1,0 +1,107 @@
+-------------------------
+Vela vecí sa može meniť, neberme toto ako vždy up-to-date verziu :D
+-----------------------
+QuestMaker.java
+  Začiatok celého programu
+  Nič extra, odtiaľto sa zavolá QuestMainFrame.java
+  
+QuestMainFrame.java
+    Inicializácia hlavného okna + button na pridávanie novej QuestBubble
+    Vytvárame v ňom QuestMainFrameCanvas
+    Vytvárame v ňom každý QuestBuble
+    Vytvárame v ňom RequestTextDialog
+  
+QuestMainFrameCanvas.java
+    Hlavné ťažisko programu, vykresluje a spravuje všetky doležité veci
+    Špeciálny Canvas aby nerobil flicker preto sa neprepisuje paint() ale paintBuffer()
+    Tu sa taktiež ošetruje všetko ohladom klikania na Questubble, QuestOutput, QuestInpput
+    alebo ak je myš nad nimi (zmena farby aby uźívatel mal feedback že niečo može robiť)
+    Vytvára sa tu LineOutputInput v mouseReleased()
+    Vytvára sa tu okno EditQuestDialog na spravovanie vnútra Questu v mousePressed()
+  
+QuestBubble.java
+    QuestBubble je grafické zobrazenie obdĺžnika a textu ktorý repezentuje Quest
+    Čisto grafická trieda
+    Obsahuje v sebe Quest
+    
+Quest.java
+    Quest reprezentuje logiku toho, čo sa deje vnútri v queste. Má QuestInputy a QuestOutputy
+    taktiež Decision-y a odkaz na svoju grafickú reprezentáciu v podobe QuestBuble
+    Dokáže si pridávať QuestInputy -> addInpu() a QuestOutputy -> addOutput()
+    Mal by si vedieť pridávať aj Decision-y ale špagetti kod zavelil a bohvie kde sa toteraz deje,
+    to sa vyrieši vo fáze dešpagetizácie
+
+QuestInput.java
+    Malý červený štvorček vedla QuestBuble, každý je originálny.
+    Rozne QuestInput-y možu v Queste iniciovať rozne prvé Decision-y
+    QuestInput má súradnice závislé na QuestBubble a odporúča sa ich vobec nemeniť ale vždy
+    po zmene súradníc QuestBubble zavolať QuestBubble.update() ktorý by mal v sebe následne volať pre každý
+    jeden QuestInput a QuestOutput -> QuestInput.update(), aaaaaaale zase je to niekde rozhadzane a treba to
+    spratať niekam (podorievam, že to bude v QuestMainFrameCanvas v mouseDragged() )
+    
+QuestOutput.java
+    To isté ako QuestInput + vie aj do ktorého QuestInputu ide (naopak to tak netreba, asi, snáď...)
+    Pozícia opať záleží na QuestBubble, vela hardkodenia (13 je približná šírka písmena fontu, 10 je
+    výška štvorčeka, 20 je výška QuestBubble, 5 je mezdera medzi QuestBubble a malým štvorčekom...)
+    
+RequestTextDialog.java
+    Zobrazí dialóg ktorý požaduje text a po zadaní a odkliknuti OK zmizne.
+    K textu sa dá dostať tak, že ako ďalší parameter zavoláme menoPremennejAkuSomDal.textArea.getText()
+    a to vrati to čo uživatel zadal, enter ako novy riadok neberie...
+    Pri zadani prazdneho sringu sa nastavi string na "null" (nie hodnotu ale slovo) aby sa predišlo napr.
+    QuestBubble ktore maju šírku 0 (pretože tá zavisí od dĺžky textu)
+    
+ LineOutputInput.java
+    V podstate je to iba pamať pe čiaru, pamata si z akeho QuestOutput ide a do akeho QuestInput ide
+    
+ EditQuestDialog.java
+    Vytvara sa tu EditQuestDialogCanvas na ktri sa nasledne kresli
+    Možnosť pridávať danému Questu ktorý editujem QuestInput a QuestOutput
+    Možnosť pridávať nové Decision-y
+    Možnosť meniť názov QuestBubble
+    
+EditQuestDialoCanvas.java
+    Vie o Queste ktorý bude kresliť, vykresluje ho
+    Vo vývoji...
+    
+Decision.java
+    Z tohot sa skladá Quest, je to v podstate zastrešenie pre entitu model "otázka + odpoveď"
+    String question hovorí o vete ktorá sa bude dávať uživatelovi
+    String popis sa v EditQuestDialogCanvas vypisuje aby určil Decision
+    Odpovede na otázku poskytuje rida Answer, všetky otázky sú uložené v LinkedListe answers
+    Ma aj DecisionInput
+    Vytvara sa tu Answer pomocou addAnswer()
+    Vytvara sa tu DecisionInput() v konštruktore
+    
+Answer.java
+    Vie o Decision-e ku ktoremu patrí
+    Má svoj AnswerOutput, String answer sa zobrazuje uživatelovi, String popis sa zobrazuje v editore
+    Vytvara sa tu AnswerOutput v konštruktre
+    Pozicia sa updatuje pomocou updaePosition(), je závislá na Decisione ku ktoremu patrí, automaticky updatuje
+    aj svoj malý štvorček AnswerOutput()
+    
+DecisionInput.java
+    Ma informaciu o Decision-e ku ktoremu patri
+    Vstupna brana do Decisionu z inej Answer
+    AnswerOutput -> DecisionInput
+    Pozicia zavisla na Decision pozicii, update cez updatePositin()
+    
+AnswerOuptut.java
+    Ukazuje na DecisionInput ktory ma byt spusteny po zvoleni danej Answer užívatelom
+    
+    
+    
+    
+
+ 
+
+    
+    
+    
+    
+  
+  
+  
+
+
+
