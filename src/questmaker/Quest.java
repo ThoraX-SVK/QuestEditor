@@ -5,7 +5,6 @@ import java.util.LinkedList;
 
 public class Quest {
     
-    
     static int inputId = 0;
     static int outputId = 0;
     LinkedList<QuestInput> inputs;
@@ -29,9 +28,4 @@ public class Quest {
                 questBubble.posY + 13*outputs.size(),10,Color.BLUE));
         outputId++;
     }
-    
-    
-    
-    
-    
 }

@@ -1,13 +1,9 @@
 package questmaker;
 
 import java.awt.Color;
-import static questmaker.Quest.inputId;
 
-/**
- *
- * @author Tom
- */
 public class QuestInput {
+    
     Quest inputForQuest;
     int id;
     int posX;
@@ -28,7 +24,4 @@ public class QuestInput {
         this.posX = inputForQuest.questBubble.posX - 15;  
         this.posY = inputForQuest.questBubble.posY + 13*inputForQuest.inputs.indexOf(this);
     }
-
-    
-    
 }

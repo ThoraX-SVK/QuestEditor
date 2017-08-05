@@ -30,12 +30,10 @@ public class RequestTextDialog extends Dialog implements ActionListener{
         textArea = new TextArea("Insert text here");
         this.add(textArea);
        
-        
         confirm = new Button("Okay");
         confirm.addActionListener(this);
         P.add(confirm);
         this.add("South",P);
-        
         
         this.setVisible(true); 
     }
@@ -43,8 +41,7 @@ public class RequestTextDialog extends Dialog implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == confirm) {  
-            this.dispose();
-            
+            this.dispose();   
         }
     }
     

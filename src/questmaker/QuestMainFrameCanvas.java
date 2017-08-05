@@ -9,10 +9,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
 
-/**
- *
- * @author Tom
- */
 public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,MouseMotionListener{
 
     LinkedList<QuestBubble> questBubbles;
@@ -39,8 +35,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                 g.drawRect(qb.posX, qb.posY, qb.bubbleSize, 20); 
                 g.drawString(qb.questName, qb.posX, qb.posY+18);
                 
-                if (!qb.quest.inputs.isEmpty()) {
-                    
+                if (!qb.quest.inputs.isEmpty()) {     
                     for (int j = 0; j < qb.quest.inputs.size(); j++) {
                         QuestInput qi = qb.quest.inputs.get(j);
                         g.setColor(qi.color);
@@ -55,13 +50,9 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                         g.drawRect(qi.posX, qi.posY, qi.size, qi.size);
                     }  
                 }
-                
-
             }
         }
     }
-    
-    
     
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -85,8 +76,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
             tempQuestBubble.bubbleColor = Color.BLUE;
             this.repaint();
         }
-        mouseButtonHold = false;
-        
+        mouseButtonHold = false;     
     }
 
     @Override
@@ -104,8 +94,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
         if (mouseButtonHold) {
             System.out.println("Mouse draggged");
             tempQuestBubble.posX = e.getX() - tempQuestBubble.bubbleSize/2;
-            //NAHARDKODENE!!!!!!!!!
-            tempQuestBubble.posY = e.getY() - 10;
+            tempQuestBubble.posY = e.getY() - 10;   //NAHARDKODENE!!!!!!!!!
             for (int i = 0; i < tempQuestBubble.quest.inputs.size(); i++) {
                 tempQuestBubble.quest.inputs.get(i).updatePosition();
             }
@@ -120,7 +109,6 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
     public void mouseMoved(MouseEvent e) {
         
         if (!mouseButtonHold && !questBubbles.isEmpty()) {
-            
             QuestBubble tempQuestBubble = selectBubbleOnMouseOver(e.getPoint());
             
             if (tempQuestBubble == null && lastMouseOver != null) {             

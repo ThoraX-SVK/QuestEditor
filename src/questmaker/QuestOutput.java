@@ -2,11 +2,8 @@ package questmaker;
 
 import java.awt.Color;
 
-/**
- *
- * @author Tom
- */
 public class QuestOutput {
+    
     Quest outputForQuest;
     int id;
     int posX;
