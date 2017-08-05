@@ -19,16 +19,19 @@ public class QuestBubble {
         this.bubbleSize = questName.length() * 13;
         this.bubbleColor = bubbleColor;
         this.quest = new Quest(this);
-        this.quest.addInput();
-        this.quest.addInput();
-        this.quest.addInput();
-        this.quest.addOutput();
-        this.quest.addOutput();
-        this.quest.addOutput();
+        
     }
     
     public boolean MouseOverlaps(Point mousePosition) {
         return mousePosition.x > posX && mousePosition.x < posX+bubbleSize &&
                mousePosition.y > posY && mousePosition.y < posY+20; // 20 -> Nahardkodene v paintbuffer() v QuestMainFrameDraw
-    } 
+    }
+    
+    public void update() {
+        this.bubbleSize = questName.length() * 13;
+        
+        for (int i = 0; i < quest.outputs.size(); i++) {
+            quest.outputs.get(i).updatePosition();
+        }
+    }
 }

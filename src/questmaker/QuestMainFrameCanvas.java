@@ -9,8 +9,9 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
 
-public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,MouseMotionListener{
-
+public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,MouseMotionListener {
+    
+    QuestMainFrame owner;
     LinkedList<QuestBubble> questBubbles;
     LinkedList<LineOutputInput> lines;
     QuestBubble tempQuestBubble;
@@ -20,7 +21,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
     boolean mouseButtonHoldOnQuestBuble;
     boolean mouseButtonHoldOnQuestOutput;
     
-    public QuestMainFrameCanvas(LinkedList<QuestBubble> questBubbles) {
+    public QuestMainFrameCanvas(LinkedList<QuestBubble> questBubbles, QuestMainFrame qmf) {
         this.setBackground(Color.BLACK);
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -82,22 +83,31 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
 
     @Override
     public void mousePressed(MouseEvent e) {
-        tempQuestBubble = selectBubbleOnMouseOver(e.getPoint());
-        tempQuestOutput = selectOutputOnMouseOver(e.getPoint());
-        if (tempQuestBubble == null && tempQuestOutput == null)
-            return;
-        
-        if (tempQuestBubble != null) {
-            tempQuestBubble.bubbleColor = Color.RED;
-            mouseButtonHoldOnQuestBuble = true;
-            this.repaint();
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            tempQuestBubble = selectBubbleOnMouseOver(e.getPoint());
+            tempQuestOutput = selectOutputOnMouseOver(e.getPoint());
+            if (tempQuestBubble == null && tempQuestOutput == null)
+                return;
+
+            if (tempQuestBubble != null) {
+                tempQuestBubble.bubbleColor = Color.RED;
+                mouseButtonHoldOnQuestBuble = true;
+                this.repaint();
+            }
+            else if (tempQuestOutput != null && tempQuestOutput.goingToInput == null) {
+                tempQuestOutput.color = Color.WHITE;
+                mouseButtonHoldOnQuestOutput = true;
+                this.repaint();
+            }
         }
-        else if (tempQuestOutput != null) {
-            tempQuestOutput.color = Color.WHITE;
-            mouseButtonHoldOnQuestOutput = true;
-            this.repaint();
+        else if (e.getButton() == MouseEvent.BUTTON3) {
+            tempQuestBubble = selectBubbleOnMouseOver(e.getPoint());
+            
+            if (tempQuestBubble != null) {
+                EditQuestDialog eqd = new EditQuestDialog(owner, tempQuestBubble.quest);
+            }
+            
         }
-        
         
     }
 
@@ -113,6 +123,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
             if (qi != null) {
                 LineOutputInput lineToCreate = new LineOutputInput(tempQuestOutput, qi);
                 lines.add(lineToCreate);
+                tempQuestOutput.setQi(qi);
             }
             
             tempQuestOutput = null;

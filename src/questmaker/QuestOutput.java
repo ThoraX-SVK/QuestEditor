@@ -4,8 +4,9 @@ import java.awt.Color;
 import java.awt.Point;
 
 public class QuestOutput {
-    
+
     Quest outputForQuest;
+    QuestInput goingToInput;
     int id;
     int posX;
     int posY;
@@ -19,17 +20,21 @@ public class QuestOutput {
         this.posY = posY;
         this.size = size;
         this.color = color;
+        this.goingToInput = null;
     }
 
     public void updatePosition() {
-        this.posX = outputForQuest.questBubble.posX + outputForQuest.questBubble.bubbleSize + 5;  
-        this.posY = outputForQuest.questBubble.posY + 13*outputForQuest.outputs.indexOf(this);
+        this.posX = outputForQuest.questBubble.posX + outputForQuest.questBubble.bubbleSize + 5;
+        this.posY = outputForQuest.questBubble.posY + 13 * outputForQuest.outputs.indexOf(this);
     }
-    
+
     public boolean MouseOverlaps(Point mousePosition) {
-        return mousePosition.x > posX && mousePosition.x < posX+size &&
-               mousePosition.y > posY && mousePosition.y < posY+size;
-    } 
-    
-    
+        return mousePosition.x > posX && mousePosition.x < posX + size
+                && mousePosition.y > posY && mousePosition.y < posY + size;
+    }
+
+    public void setQi(QuestInput qi) {
+        this.goingToInput = qi;
+    }
+
 }

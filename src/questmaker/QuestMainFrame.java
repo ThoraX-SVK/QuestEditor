@@ -29,7 +29,7 @@ public class QuestMainFrame extends Frame implements ActionListener{
                                 }
         );
         questBubbles = new LinkedList<>();
-        qmfc = new QuestMainFrameCanvas(questBubbles);
+        qmfc = new QuestMainFrameCanvas(questBubbles,this);
         this.add(qmfc);
         
         Panel P = new Panel();

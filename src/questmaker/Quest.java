@@ -9,12 +9,14 @@ public class Quest {
     static int outputId = 0;
     LinkedList<QuestInput> inputs;
     LinkedList<QuestOutput> outputs;
+    LinkedList<Decision> decisions;
     QuestBubble questBubble;
 
     public Quest(QuestBubble questBubble) {
         this.questBubble = questBubble;
         inputs = new LinkedList<>();
         outputs = new LinkedList<>();
+        decisions = new LinkedList<>();
     }
     
     public void addInput() {
