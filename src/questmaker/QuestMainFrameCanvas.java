@@ -12,16 +12,22 @@ import java.util.LinkedList;
 public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,MouseMotionListener{
 
     LinkedList<QuestBubble> questBubbles;
+    LinkedList<LineOutputInput> lines;
     QuestBubble tempQuestBubble;
     QuestBubble lastMouseOver;
-    boolean mouseButtonHold;
+    QuestOutput tempQuestOutput;
+    Point tempLineEnd;
+    boolean mouseButtonHoldOnQuestBuble;
+    boolean mouseButtonHoldOnQuestOutput;
     
     public QuestMainFrameCanvas(LinkedList<QuestBubble> questBubbles) {
         this.setBackground(Color.BLACK);
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.questBubbles = questBubbles;
-        this.mouseButtonHold = false;
+        this.lines = new LinkedList<>();
+        this.mouseButtonHoldOnQuestBuble = false;
+        this.mouseButtonHoldOnQuestOutput = false;
     }
     
     @Override
@@ -50,6 +56,21 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                         g.drawRect(qi.posX, qi.posY, qi.size, qi.size);
                     }  
                 }
+                
+                if (tempQuestOutput != null) {
+                    g.setColor(Color.ORANGE);
+                    g.drawLine(tempQuestOutput.posX+5, tempQuestOutput.posY+5,
+                            tempLineEnd.x, tempLineEnd.y);
+                }
+            }
+        }
+        
+        if (!lines.isEmpty()) {
+            for (int i = 0; i < lines.size(); i++) {
+                LineOutputInput lineIO = lines.get(i);
+                g.setColor(Color.WHITE);
+                g.drawLine(lineIO.qo.posX+5, lineIO.qo.posY+5,lineIO.qi.posX+5, lineIO.qi.posY+5);
+
             }
         }
     }
@@ -62,21 +83,45 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
     @Override
     public void mousePressed(MouseEvent e) {
         tempQuestBubble = selectBubbleOnMouseOver(e.getPoint());
-        if (tempQuestBubble == null)
+        tempQuestOutput = selectOutputOnMouseOver(e.getPoint());
+        if (tempQuestBubble == null && tempQuestOutput == null)
             return;
         
-        tempQuestBubble.bubbleColor = Color.RED;
-        mouseButtonHold = true;
-        this.repaint();
+        if (tempQuestBubble != null) {
+            tempQuestBubble.bubbleColor = Color.RED;
+            mouseButtonHoldOnQuestBuble = true;
+            this.repaint();
+        }
+        else if (tempQuestOutput != null) {
+            tempQuestOutput.color = Color.WHITE;
+            mouseButtonHoldOnQuestOutput = true;
+            this.repaint();
+        }
+        
+        
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (mouseButtonHold) {
+        if (mouseButtonHoldOnQuestBuble) {
             tempQuestBubble.bubbleColor = Color.BLUE;
             this.repaint();
         }
-        mouseButtonHold = false;     
+        if (mouseButtonHoldOnQuestOutput) {
+            tempQuestOutput.color = Color.BLUE;
+            QuestInput qi = selectInputOnMouseOver(e.getPoint());
+            if (qi != null) {
+                LineOutputInput lineToCreate = new LineOutputInput(tempQuestOutput, qi);
+                lines.add(lineToCreate);
+            }
+            
+            tempQuestOutput = null;
+            this.repaint();
+        }
+        
+        
+        mouseButtonHoldOnQuestOutput = false;
+        mouseButtonHoldOnQuestBuble = false;     
     }
 
     @Override
@@ -91,8 +136,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (mouseButtonHold) {
-            System.out.println("Mouse draggged");
+        if (mouseButtonHoldOnQuestBuble) {
             tempQuestBubble.posX = e.getX() - tempQuestBubble.bubbleSize/2;
             tempQuestBubble.posY = e.getY() - 10;   //NAHARDKODENE!!!!!!!!!
             for (int i = 0; i < tempQuestBubble.quest.inputs.size(); i++) {
@@ -103,12 +147,16 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
             }
             this.repaint();
         }
+        else if (mouseButtonHoldOnQuestOutput) {
+            tempLineEnd = new Point(e.getPoint());
+            this.repaint();
+        }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         
-        if (!mouseButtonHold && !questBubbles.isEmpty()) {
+        if (!mouseButtonHoldOnQuestBuble && !questBubbles.isEmpty()) {
             QuestBubble tempQuestBubble = selectBubbleOnMouseOver(e.getPoint());
             
             if (tempQuestBubble == null && lastMouseOver != null) {             
@@ -151,5 +199,42 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
         
         return bestBubble;   
     }
+    
+    private QuestOutput selectOutputOnMouseOver(Point mouseCursor) {
+        if (questBubbles.isEmpty())
+            return null;
+        
+        QuestBubble actualQuestBubble;
+        QuestOutput qo;
+        
+        for (int i = 0; i < questBubbles.size(); i++) {
+            actualQuestBubble = questBubbles.get(i);
+            for (int j = 0; j < actualQuestBubble.quest.outputs.size(); j++) {
+                qo = actualQuestBubble.quest.outputs.get(j);
+                if (qo.MouseOverlaps(mouseCursor))
+                    return qo;
+            }
+        }
+        return null;
+    }
+    
+    private QuestInput selectInputOnMouseOver(Point mouseCursor) {
+        if (questBubbles.isEmpty())
+            return null;
+        
+        QuestBubble actualQuestBubble;
+        QuestInput qi;
+        
+        for (int i = 0; i < questBubbles.size(); i++) {
+            actualQuestBubble = questBubbles.get(i);
+            for (int j = 0; j < actualQuestBubble.quest.inputs.size(); j++) {
+                qi = actualQuestBubble.quest.inputs.get(j);
+                if (qi.MouseOverlaps(mouseCursor))
+                    return qi;
+            }
+        }
+        return null;
+    }
+    
     
 }

@@ -1,6 +1,7 @@
 package questmaker;
 
 import java.awt.Color;
+import java.awt.Point;
 
 public class QuestInput {
     
@@ -23,5 +24,10 @@ public class QuestInput {
     public void updatePosition() {
         this.posX = inputForQuest.questBubble.posX - 15;  
         this.posY = inputForQuest.questBubble.posY + 13*inputForQuest.inputs.indexOf(this);
+    }
+    
+    public boolean MouseOverlaps(Point mousePosition) {
+        return mousePosition.x > posX && mousePosition.x < posX+size &&
+               mousePosition.y > posY && mousePosition.y < posY+size;
     }
 }
