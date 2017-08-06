@@ -11,6 +11,7 @@ public class AnswerOutput {
     
     Answer belongsTo;
     Decision goingToDecision;
+    QuestOutput goingToQuestOutput;
     int posX;
     int posY;
     int size;
@@ -19,6 +20,7 @@ public class AnswerOutput {
     public AnswerOutput(Answer belongsTo) {
         this.belongsTo = belongsTo;
         goingToDecision = null;
+        goingToQuestOutput = null;
         posX = belongsTo.posX + belongsTo.size + 5;
         posY = belongsTo.posY;
         size = 10;

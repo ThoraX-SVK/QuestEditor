@@ -7,6 +7,7 @@ public class QuestOutput {
 
     Quest outputForQuest;
     QuestInput goingToInput;
+    AnswerOutput fromAnswerOutput;
     int id;
     int posX;
     int posY;
@@ -21,6 +22,7 @@ public class QuestOutput {
         this.size = size;
         this.color = color;
         this.goingToInput = null;
+        this.fromAnswerOutput = null;
     }
 
     public void updatePosition() {
