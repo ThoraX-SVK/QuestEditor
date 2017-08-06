@@ -10,6 +10,7 @@ public class Quest {
     LinkedList<QuestInput> inputs;
     LinkedList<QuestOutput> outputs;
     LinkedList<Decision> decisions;
+    LinkedList<LineAnswerDecision> lines;
     QuestBubble questBubble;
 
     public Quest(QuestBubble questBubble) {
@@ -17,6 +18,7 @@ public class Quest {
         inputs = new LinkedList<>();
         outputs = new LinkedList<>();
         decisions = new LinkedList<>();
+        lines = new LinkedList<>();
     }
     
     public void addInput() {
@@ -30,4 +32,5 @@ public class Quest {
                 questBubble.posY + 13*outputs.size(),10,Color.BLUE));
         outputId++;
     }
+    
 }

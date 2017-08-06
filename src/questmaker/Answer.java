@@ -1,5 +1,7 @@
 package questmaker;
 
+import java.awt.Point;
+
 /**
  *
  * @author Tom
@@ -34,8 +36,15 @@ public class Answer {
         this.posY = decision.posY + 20 * decision.answers.indexOf(this) + 20;
         output.updatePosition();
     }
-        
     
+    public void updateSize() {
+        this.size = decision.size;
+        output.updatePosition();
+    }
     
+    public boolean MouseOverlaps(Point mousePosition) {
+        return mousePosition.x > posX && mousePosition.x < posX+size &&
+               mousePosition.y > posY && mousePosition.y < posY+20; // 20 -> Nahardkodene v paintbuffer() v QuestMainFrameDraw
+    }
     
 }
