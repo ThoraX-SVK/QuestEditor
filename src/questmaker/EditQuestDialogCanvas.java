@@ -7,7 +7,6 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import jdk.nashorn.internal.parser.TokenType;
 
 public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener,MouseMotionListener {
 
@@ -41,7 +40,7 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                 g.drawLine(tempAnswerOutput.posX+5, tempAnswerOutput.posY+5,
                         tempLineEnd.x, tempLineEnd.y);
             else if (tempQuestInput != null)
-                g.drawLine(15, quest.inputs.indexOf(tempQuestInput)*16 + 16,
+                g.drawLine(15, quest.inputs.indexOf(tempQuestInput)*33 + 16,
                         tempLineEnd.x,tempLineEnd.y);
         }
         
@@ -52,9 +51,9 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                 if (lad.di != null && lad.ao != null)
                     g.drawLine(lad.ao.posX+5, lad.ao.posY+5, lad.di.posX+5, lad.di.posY+5);
                 else if (lad.qo != null && lad.ao != null)
-                    g.drawLine(lad.ao.posX+5, lad.ao.posY+5, this.getWidth() - 16, 16*quest.outputs.indexOf(lad.qo) + 16);
+                    g.drawLine(lad.ao.posX+5, lad.ao.posY+5, this.getWidth() - 16, 33*quest.outputs.indexOf(lad.qo) + 16);
                 else if (lad.qi != null && lad.di != null)
-                    g.drawLine(15, 16*quest.inputs.indexOf(lad.qi), lad.di.posX, lad.di.posY);
+                    g.drawLine(15, 33*quest.inputs.indexOf(lad.qi)+15, lad.di.posX+5, lad.di.posY+5);
                   
                     
             }
@@ -167,21 +166,21 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             DecisionInput di = selectDecisionInputOnMouseOver(e.getPoint());
             QuestOutput qo = selectQuestOutputOnMouseOver(e.getPoint());
             if (di != null) {
-                if (tempQuestInput != null) {
-                    LineAnswerDecision lad = new LineAnswerDecision(di, tempQuestInput);
-                    quest.lines.add(lad);
-                }
-                else {
                 LineAnswerDecision tempLineToAdd = new LineAnswerDecision(tempAnswerOutput, di);
                 quest.lines.add(tempLineToAdd);
-                tempAnswerOutput.goingToDecision = di.inputToDecision;
-                }
+                tempAnswerOutput.goingToDecision = di.inputToDecision;               
             }
             else if (qo != null) {
                 LineAnswerDecision tempLineToAdd = new LineAnswerDecision(tempAnswerOutput, qo);
                 quest.lines.add(tempLineToAdd);
                 tempAnswerOutput.goingToQuestOutput = qo;
             }
+        }
+        else if (tempQuestInput != null) {
+            tempQuestInput.color = Color.RED;
+            DecisionInput di = selectDecisionInputOnMouseOver(e.getPoint());
+            LineAnswerDecision lad = new LineAnswerDecision(di, tempQuestInput);
+            quest.lines.add(lad);  
         }
         
         tempLineEnd = null;

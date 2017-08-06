@@ -33,7 +33,7 @@ public class RequestTextDialog extends Dialog implements ActionListener{
                                 {   public void windowClosing(WindowEvent e) {
                                     if ("".equals(textArea.getText()))
                                         textArea.setText("null");
-                                    dispose();
+                                        dispose();
                                     }
                                 }
         );

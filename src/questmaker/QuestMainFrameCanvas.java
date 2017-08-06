@@ -179,8 +179,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                 lastMouseOver = tempQuestBubble;
                 tempQuestBubble.bubbleColor = Color.BLUE;
                 this.repaint();
-            }
-            
+            } 
         }
         
         

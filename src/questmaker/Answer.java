@@ -7,8 +7,7 @@ import java.awt.Point;
  * @author Tom
  */
 public class Answer {
-    
-    
+   
     static int answerId;
     Decision decision;
     AnswerOutput output;

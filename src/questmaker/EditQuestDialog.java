@@ -62,8 +62,7 @@ public class EditQuestDialog extends Dialog implements ActionListener {
         
         eqdc = new EditQuestDialogCanvas(quest);
         this.add(eqdc);
-        
-        
+           
         this.setVisible(true);
     }
 
