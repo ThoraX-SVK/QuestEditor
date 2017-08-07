@@ -37,6 +37,10 @@ public class DecisionInput {
                mousePosition.y > posY && mousePosition.y < posY+size; // 20 -> Nahardkodene v paintbuffer() v QuestMainFrameDraw
     }
     
+    public void delete() {
+        inputToDecision = null;
+    }
+    
     
    
    

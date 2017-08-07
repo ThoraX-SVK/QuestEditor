@@ -79,4 +79,14 @@ public class Decision {
         
     }
     
+    public void delete() {
+        for (Answer an : answers)
+            an.delete();
+        
+        decisionInput.delete();
+        plusSign.delete();
+        
+        
+    }
+    
 }

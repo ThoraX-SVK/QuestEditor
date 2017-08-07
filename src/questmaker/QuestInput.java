@@ -30,4 +30,8 @@ public class QuestInput {
         return mousePosition.x > posX && mousePosition.x < posX+size &&
                mousePosition.y > posY && mousePosition.y < posY+size;
     }
+    
+    public void delete() {
+        this.inputForQuest = null;
+    }
 }

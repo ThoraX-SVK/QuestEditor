@@ -34,4 +34,8 @@ public class QuestBubble {
             quest.outputs.get(i).updatePosition();
         }
     }
+    
+    public void delete() {
+        quest.delete();
+    }
 }

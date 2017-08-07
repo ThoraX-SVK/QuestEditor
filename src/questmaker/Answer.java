@@ -46,4 +46,9 @@ public class Answer {
                mousePosition.y > posY && mousePosition.y < posY+20; // 20 -> Nahardkodene v paintbuffer() v QuestMainFrameDraw
     }
     
+    public void delete() {
+        decision = null;
+        output.delete();
+    }
+    
 }

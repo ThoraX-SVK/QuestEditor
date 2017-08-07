@@ -35,4 +35,8 @@ public class DecisionAddNewAnswerSign {
                mousePosition.y > posY && mousePosition.y < posY+10;
     }
     
+    public void delete() {
+        belongsTo = null;
+    }
+    
 }

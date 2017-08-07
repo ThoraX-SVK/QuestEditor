@@ -37,4 +37,9 @@ public class AnswerOutput {
                mousePosition.y > posY && mousePosition.y < posY+size;
     }
     
+    public void delete() {
+        belongsTo = null;
+        goingToDecision = null;
+        goingToQuestOutput = null;
+    }
 }
