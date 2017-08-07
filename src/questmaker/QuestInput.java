@@ -1,6 +1,7 @@
 package questmaker;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
 
 public class QuestInput {
@@ -33,5 +34,10 @@ public class QuestInput {
     
     public void delete() {
         this.inputForQuest = null;
+    }
+    
+    public void draw(Graphics g) {
+        g.setColor(this.color);
+        g.drawRect(this.posX, this.posY, this.size, this.size);
     }
 }

@@ -44,59 +44,26 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
     public void paintBuffer(Graphics g) {
         
         g.setFont(new Font("OCR A Extended", 1, 20));
-        
-        if (showDeleteZone) {
+        if (showDeleteZone)
             drawDeleteZone(g);
-        }
         
-        if (!questBubbles.isEmpty()) {
-            for (int i = 0; i < questBubbles.size(); i++) {
-                QuestBubble qb = questBubbles.get(i);
-                g.setColor(qb.bubbleColor);
-                
-                //pozor na MouseOverlapsSquare() v QuestBubble, hodnota 20 je tam nahardkodena
-                g.drawRect(qb.posX, qb.posY, qb.bubbleSize, 20); 
-                g.drawString(qb.questName, qb.posX, qb.posY+18);
-                
-                if (!qb.quest.inputs.isEmpty()) {     
-                    for (int j = 0; j < qb.quest.inputs.size(); j++) {
-                        QuestInput qi = qb.quest.inputs.get(j);
-                        g.setColor(qi.color);
-                        g.drawRect(qi.posX, qi.posY, qi.size, qi.size);
-                    }  
-                }
-                
-                if (!qb.quest.outputs.isEmpty()) {
-                    for (int j = 0; j < qb.quest.outputs.size(); j++) {
-                        QuestOutput qi = qb.quest.outputs.get(j);
-                        g.setColor(qi.color);
-                        g.drawRect(qi.posX, qi.posY, qi.size, qi.size);
-                    }  
-                }
-                
-                if (tempLineEnd != null) {
+        if (tempLineEnd != null) {
                     g.setColor(Color.ORANGE);
                     g.drawLine(tempQuestOutput.posX+5, tempQuestOutput.posY+5,
                             tempLineEnd.x, tempLineEnd.y);
-                }
-            }
+        }
+        
+        if (!questBubbles.isEmpty()) {
+            for (QuestBubble qb : questBubbles)
+                qb.draw(g); 
         }
         
         if (!lines.isEmpty()) {
-            for (int i = 0; i < lines.size(); i++) {
-                LineOutputInput lineIO = lines.get(i);
-                g.setColor(Color.WHITE);
-                g.drawLine(lineIO.qo.posX+5, lineIO.qo.posY+5,lineIO.qi.posX+5, lineIO.qi.posY+5);
-
-            }
+            for (LineOutputInput loi : lines)
+                loi.draw(g); 
         }
     }
     
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
@@ -133,8 +100,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                 
                 for (LineOutputInput loi : toDelete)
                     lines.remove(loi);
-                
-                //tempQuestOutput.delete();
+                      
                 this.repaint();
             }
             else if (tempQuesInput != null) {
@@ -145,8 +111,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                 
                 for (LineOutputInput loi : toDelete)
                     lines.remove(loi);
-                
-                //tempQuestOutput.delete();
+                  
                 this.repaint();
             }
             
@@ -193,16 +158,6 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
         showDeleteZone = false;
         mouseButtonHoldOnQuestOutput = false;
         mouseButtonHoldOnQuestBuble = false;     
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -341,6 +296,20 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
         g.drawString("Delete",this.getWidth() - 140, this.getHeight() - 18);
     }
     
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     
     

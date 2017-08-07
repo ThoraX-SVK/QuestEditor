@@ -1,6 +1,7 @@
 package questmaker;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
 
 public class QuestOutput {
@@ -43,5 +44,10 @@ public class QuestOutput {
         outputForQuest = null;
         goingToInput = null;
         fromAnswerOutput = null;
+    }
+    
+    public void draw(Graphics g) {
+        g.setColor(this.color);
+        g.drawRect(this.posX, this.posY, this.size, this.size);
     }
 }

@@ -1,7 +1,9 @@
 package questmaker;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
+import sun.nio.cs.ext.TIS_620;
 
 public class QuestBubble {
     
@@ -37,5 +39,24 @@ public class QuestBubble {
     
     public void delete() {
         quest.delete();
+    }
+    
+    public void draw(Graphics g) {
+        g.setColor(this.bubbleColor);
+                
+        //pozor na MouseOverlapsSquare() v QuestBubble, hodnota 20 je tam nahardkodena
+        g.drawRect(this.posX, this.posY, this.bubbleSize, 20); 
+        g.drawString(this.questName, this.posX, this.posY+18);
+        
+        if(!this.quest.inputs.isEmpty()) {
+            for (QuestInput qi : this.quest.inputs)
+                qi.draw(g);
+        }
+        if (!this.quest.outputs.isEmpty()) {
+            for (QuestOutput qo: this.quest.outputs)
+                qo.draw(g);
+        }
+        
+        
     }
 }

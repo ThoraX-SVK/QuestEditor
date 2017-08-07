@@ -1,5 +1,8 @@
 package questmaker;
 
+import java.awt.Color;
+import java.awt.Graphics;
+
 /**
  *
  * @author Tom
@@ -28,6 +31,11 @@ public class LineOutputInput {
             return true;
         }
         return false;
+    }
+    
+    public void draw(Graphics g) {
+        g.setColor(Color.WHITE);
+        g.drawLine(this.qo.posX+5, this.qo.posY+5,this.qi.posX+5, this.qi.posY+5);
     }
 
 }
