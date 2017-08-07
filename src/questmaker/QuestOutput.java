@@ -38,5 +38,11 @@ public class QuestOutput {
     public void setQi(QuestInput qi) {
         this.goingToInput = qi;
     }
+    
+    public void delete() {
+        outputForQuest = null;
+        goingToInput = null;
+        fromAnswerOutput = null;
+    }
 
 }

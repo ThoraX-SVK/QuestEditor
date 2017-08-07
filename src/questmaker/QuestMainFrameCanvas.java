@@ -7,7 +7,9 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,MouseMotionListener {
     
@@ -20,6 +22,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
     Point tempLineEnd;
     boolean mouseButtonHoldOnQuestBuble;
     boolean mouseButtonHoldOnQuestOutput;
+    boolean showDeleteZone;
     
     public QuestMainFrameCanvas(LinkedList<QuestBubble> questBubbles, QuestMainFrame qmf) {
         this.setBackground(Color.BLACK);
@@ -29,10 +32,19 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
         this.lines = new LinkedList<>();
         this.mouseButtonHoldOnQuestBuble = false;
         this.mouseButtonHoldOnQuestOutput = false;
+        this.showDeleteZone = false;
     }
     
     @Override
     public void paintBuffer(Graphics g) {
+        
+        if (showDeleteZone) {
+            g.setColor(Color.RED);
+            g.drawRect(this.getWidth() - 160, this.getHeight() - 40, 120, 30);
+            g.drawString("Delete",this.getWidth() - 140, this.getHeight() - 18);
+        }
+        
+        
         if (questBubbles.size() != 0) {
             for (int i = 0; i < questBubbles.size(); i++) {
                 QuestBubble qb = questBubbles.get(i);
@@ -92,6 +104,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
             if (tempQuestBubble != null) {
                 tempQuestBubble.bubbleColor = Color.RED;
                 mouseButtonHoldOnQuestBuble = true;
+                showDeleteZone = true;
                 this.repaint();
             }
             else if (tempQuestOutput != null && tempQuestOutput.goingToInput == null) {
@@ -114,7 +127,39 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
     @Override
     public void mouseReleased(MouseEvent e) {
         if (mouseButtonHoldOnQuestBuble) {
-            tempQuestBubble.bubbleColor = Color.BLUE;
+            //ak sa nachadza v cervenom delete obdlzniku
+            if (e.getX() > this.getWidth() - 160 && e.getX() < this.getWidth() - 40 &&
+                    e.getY() > this.getHeight() - 40 && e.getY() < this.getHeight() - 10) {
+                
+                Set<LineOutputInput> toDelete = new HashSet<>();
+                for (LineOutputInput loi : lines) {
+                    for (QuestInput qi : tempQuestBubble.quest.inputs) {
+                        if (loi.deleteIfContainsAtLeastOne(qi, null)) {
+                            toDelete.add(loi);
+                            break;
+                        }
+                    }
+                    
+                }
+                for (LineOutputInput loi : lines) {
+                    for (QuestOutput qo : tempQuestBubble.quest.outputs) {
+                        if (loi.deleteIfContainsAtLeastOne(null, qo))
+                            toDelete.add(loi);
+                    }         
+                }
+                
+                for (LineOutputInput loi : toDelete) {
+                    lines.remove(loi);
+                }
+                
+                
+                tempQuestBubble.delete();
+                questBubbles.remove(tempQuestBubble);
+                
+            }
+            else
+                tempQuestBubble.bubbleColor = Color.BLUE;
+            
             this.repaint();
         }
         if (mouseButtonHoldOnQuestOutput) {
@@ -130,7 +175,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
             this.repaint();
         }
         
-        
+        showDeleteZone = false;
         mouseButtonHoldOnQuestOutput = false;
         mouseButtonHoldOnQuestBuble = false;     
     }

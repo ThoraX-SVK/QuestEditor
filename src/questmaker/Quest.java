@@ -33,4 +33,12 @@ public class Quest {
         outputId++;
     }
     
+    public void delete() {
+        
+        inputs.clear();
+        outputs.clear();
+        decisions.clear();
+        lines.clear();
+    }
+    
 }

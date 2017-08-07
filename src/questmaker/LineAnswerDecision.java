@@ -25,7 +25,4 @@ public class LineAnswerDecision {
         this.qi = qi;
     }
     
-    
-    
-    
 }

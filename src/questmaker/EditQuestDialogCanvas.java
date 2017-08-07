@@ -34,6 +34,11 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
     @Override
     public void paintBuffer(Graphics g) {
         
+        
+        
+        
+        
+        
         if (tempLineEnd != null) {
             g.setColor(Color.YELLOW);
             if (tempAnswerOutput != null)
