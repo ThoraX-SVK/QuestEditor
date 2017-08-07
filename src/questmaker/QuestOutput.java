@@ -44,5 +44,4 @@ public class QuestOutput {
         goingToInput = null;
         fromAnswerOutput = null;
     }
-
 }
