@@ -7,6 +7,9 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
 public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener,MouseMotionListener {
 
@@ -19,12 +22,14 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
     boolean mouseHoldDecisionSelected;
     boolean mouseHoldAnswerOutputSelected;
     boolean mouseHoldOnQuestInputSelected;
+    boolean drawDeleteZone;
     
     
     public EditQuestDialogCanvas(Quest quest) {
         this.quest = quest;
         this.mouseHoldDecisionSelected = false;
         this.mouseHoldAnswerOutputSelected = false;
+        this.drawDeleteZone = false;
         
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -34,10 +39,9 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
     @Override
     public void paintBuffer(Graphics g) {
         
-        
-        
-        
-        
+        g.setFont(new Font("OCR A Extended", 1, 20));
+        if (drawDeleteZone)
+            drawDeleteZone(g);
         
         if (tempLineEnd != null) {
             g.setColor(Color.YELLOW);
@@ -128,6 +132,7 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         
         if (e.getButton() == MouseEvent.BUTTON1) {          
             if (tempDecision != null) {
+                drawDeleteZone = true;
                 mouseHoldDecisionSelected = true;
                 tempDecision.color = Color.RED;
                 this.repaint();
@@ -187,7 +192,29 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             LineAnswerDecision lad = new LineAnswerDecision(di, tempQuestInput);
             quest.lines.add(lad);  
         }
+        else if (tempDecision != null) {
+            if (e.getX() > this.getWidth() - 160 && e.getX() < this.getWidth() - 40 &&
+                    e.getY() > this.getHeight() - 40 && e.getY() < this.getHeight() - 10) {
+                
+                Set<LineAnswerDecision> toDelete = new HashSet<>();
+                LinkedList<AnswerOutput> toSend = new LinkedList<>();
+                for (Answer a : tempDecision.answers)
+                    toSend.add(a.output);
+                toDelete.addAll(selectLinesContainingAnswerOutput(toSend, quest.lines));
+                toDelete.addAll(selectLinsContainingDecisionInput(tempDecision.decisionInput, quest.lines));
+                
+                for (LineAnswerDecision lad : toDelete)
+                    lad.delete();
+                
+                tempDecision.delete();
+                quest.decisions.remove(tempDecision);
+            }
+            
+            
+            
+        }
         
+        drawDeleteZone = false;
         tempLineEnd = null;
         mouseHoldAnswerOutputSelected = false;
         mouseHoldDecisionSelected = false;
@@ -234,6 +261,12 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             lastDecisionMouseOver = null;
             this.repaint();
         }
+    }
+    
+    private void drawDeleteZone(Graphics g) {
+        g.setColor(Color.RED);
+        g.drawRect(this.getWidth() - 160, this.getHeight() - 40, 120, 30);
+        g.drawString("Delete",this.getWidth() - 140, this.getHeight() - 18);
     }
     
     private Decision selectDecisionOnMouseOver(Point mouseCursor) {
@@ -335,6 +368,32 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                return quest.inputs.get(i); 
        }
        return null;
+   }
+   
+   private Set<LineAnswerDecision> selectLinesContainingAnswerOutput(LinkedList<AnswerOutput> aos, 
+                                                                        LinkedList<LineAnswerDecision> lines) {
+       Set<LineAnswerDecision> toSelect = new HashSet<LineAnswerDecision>();
+       
+       for (LineAnswerDecision lad : lines) {
+           for (AnswerOutput ao : aos) {
+               if (lad.ao == ao)
+                   toSelect.add(lad);
+           }
+       }
+       return toSelect;
+   }
+   
+   private Set<LineAnswerDecision> selectLinsContainingDecisionInput(DecisionInput di,
+                                                                        LinkedList<LineAnswerDecision> lines) {
+       Set<LineAnswerDecision> toSelect = new HashSet<LineAnswerDecision>();
+       
+       for (LineAnswerDecision lad : lines) {
+               if (lad.di == di)
+                   toSelect.add(lad);
+       }
+       return toSelect;
+       
+       
    }
    
 }

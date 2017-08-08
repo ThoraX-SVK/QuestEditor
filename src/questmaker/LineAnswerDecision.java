@@ -25,4 +25,19 @@ public class LineAnswerDecision {
         this.qi = qi;
     }
     
+    public void delete() {
+        
+        if (qo != null)
+            qo.fromAnswerOutput = null;
+        if (ao != null)
+            ao.goingToDecision = null;
+        
+        this.qo = null;
+        this.qi = null;
+        this.ao = null;
+        this.di = null;
+    }
+    
+    
+    
 }
