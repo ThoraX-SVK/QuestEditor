@@ -4,23 +4,21 @@
  *
  *  Toto zabraňuje flickeru pri posúvaní/behu proramu
  */
-
 package questmaker;
 
 import java.awt.*;
 
-public class DoubleBuffer extends Canvas{
+public class DoubleBuffer extends Canvas {
 
-    public DoubleBuffer(){
+    public DoubleBuffer() {
         super();
     }
-    
+
     public void update(Graphics g) {
         paint(g);
     }
 
-    
-        //    class variables
+    //    class variables
     private int bufferWidth;
     private int bufferHeight;
     private Image bufferImage;
@@ -42,50 +40,51 @@ public class DoubleBuffer extends Canvas{
         this.bufferHeight = bufferHeight;
     }
 
-    private void resetBuffer(){
+    private void resetBuffer() {
         // always keep track of the image size
-        bufferWidth=getSize().width;
-        bufferHeight=getSize().height;
+        bufferWidth = getSize().width;
+        bufferHeight = getSize().height;
 
         //    clean up the previous image
-        if(bufferGraphics!=null){
+        if (bufferGraphics != null) {
             bufferGraphics.dispose();
-            bufferGraphics=null;
+            bufferGraphics = null;
         }
-        if(bufferImage!=null){
+        if (bufferImage != null) {
             bufferImage.flush();
-            bufferImage=null;
+            bufferImage = null;
         }
         System.gc();
 
         //    create the new image with the size of the panel
-        bufferImage=createImage(bufferWidth,bufferHeight);
-        bufferGraphics=bufferImage.getGraphics();
+        bufferImage = createImage(bufferWidth, bufferHeight);
+        bufferGraphics = bufferImage.getGraphics();
     }
-    
-    public void paint(Graphics g){
-    //    checks the buffersize with the current panelsize
+
+    public void paint(Graphics g) {
+        //    checks the buffersize with the current panelsize
         //    or initialises the image with the first paint
-        if(bufferWidth!=getSize().width ||
-          bufferHeight!=getSize().height ||
-          bufferImage==null || bufferGraphics==null)
+        if (bufferWidth != getSize().width
+                || bufferHeight != getSize().height
+                || bufferImage == null || bufferGraphics == null) {
             resetBuffer();
+        }
 
-    if(bufferGraphics!=null){
-        //this clears the offscreen image, not the onscreen one
-        bufferGraphics.clearRect(0,0,bufferWidth,bufferHeight);
+        if (bufferGraphics != null) {
+            //this clears the offscreen image, not the onscreen one
+            bufferGraphics.clearRect(0, 0, bufferWidth, bufferHeight);
 
-        //calls the paintbuffer method with
-        //the offscreen graphics as a param
-        paintBuffer(bufferGraphics);
+            //calls the paintbuffer method with
+            //the offscreen graphics as a param
+            paintBuffer(bufferGraphics);
 
-        //we finaly paint the offscreen image onto the onscreen image
-        g.drawImage(bufferImage,0,0,this);
+            //we finaly paint the offscreen image onto the onscreen image
+            g.drawImage(bufferImage, 0, 0, this);
+        }
     }
-}
-    
-    public void paintBuffer(Graphics g){
-    //in classes extended from this one, add something to paint here!
-    //always remember, g is the offscreen graphics
+
+    public void paintBuffer(Graphics g) {
+        //in classes extended from this one, add something to paint here!
+        //always remember, g is the offscreen graphics
     }
 }

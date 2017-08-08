@@ -39,13 +39,13 @@ public class QuestOutput {
     public void setQi(QuestInput qi) {
         this.goingToInput = qi;
     }
-    
+
     public void delete() {
         outputForQuest = null;
         goingToInput = null;
         fromAnswerOutput = null;
     }
-    
+
     public void draw(Graphics g) {
         g.setColor(this.color);
         g.drawRect(this.posX, this.posY, this.size, this.size);

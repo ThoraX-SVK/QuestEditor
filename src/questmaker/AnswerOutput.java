@@ -8,7 +8,7 @@ import java.awt.Point;
  * @author Tom
  */
 public class AnswerOutput {
-    
+
     Answer belongsTo;
     Decision goingToDecision;
     QuestOutput goingToQuestOutput;
@@ -26,17 +26,17 @@ public class AnswerOutput {
         size = 10;
         color = Color.BLUE;
     }
-    
+
     public void updatePosition() {
         posX = belongsTo.posX + belongsTo.size + 5;
         posY = belongsTo.posY;
     }
-    
+
     public boolean MouseOverlaps(Point mousePosition) {
-        return mousePosition.x > posX && mousePosition.x < posX+size &&
-               mousePosition.y > posY && mousePosition.y < posY+size;
+        return mousePosition.x > posX && mousePosition.x < posX + size
+                && mousePosition.y > posY && mousePosition.y < posY + size;
     }
-    
+
     public void delete() {
         belongsTo = null;
         goingToDecision = null;

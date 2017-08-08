@@ -6,7 +6,7 @@ import java.awt.Point;
 import sun.nio.cs.ext.TIS_620;
 
 public class QuestBubble {
-    
+
     String questName;
     int posX;
     int posY;
@@ -14,49 +14,50 @@ public class QuestBubble {
     Color bubbleColor;
     Quest quest;
 
-    public QuestBubble(String questName,int posX, int posY, Color bubbleColor, Quest quest) {
+    public QuestBubble(String questName, int posX, int posY, Color bubbleColor, Quest quest) {
         this.questName = questName;
         this.posX = posX;
         this.posY = posY;
         this.bubbleSize = questName.length() * 13;
         this.bubbleColor = bubbleColor;
         this.quest = new Quest(this);
-        
+
     }
-    
+
     public boolean MouseOverlaps(Point mousePosition) {
-        return mousePosition.x > posX && mousePosition.x < posX+bubbleSize &&
-               mousePosition.y > posY && mousePosition.y < posY+20; // 20 -> Nahardkodene v paintbuffer() v QuestMainFrameDraw
+        return mousePosition.x > posX && mousePosition.x < posX + bubbleSize
+                && mousePosition.y > posY && mousePosition.y < posY + 20; // 20 -> Nahardkodene v paintbuffer() v QuestMainFrameDraw
     }
-    
+
     public void update() {
         this.bubbleSize = questName.length() * 13;
-        
+
         for (int i = 0; i < quest.outputs.size(); i++) {
             quest.outputs.get(i).updatePosition();
         }
     }
-    
+
     public void delete() {
         quest.delete();
     }
-    
+
     public void draw(Graphics g) {
         g.setColor(this.bubbleColor);
-                
+
         //pozor na MouseOverlapsSquare() v QuestBubble, hodnota 20 je tam nahardkodena
-        g.drawRect(this.posX, this.posY, this.bubbleSize, 20); 
-        g.drawString(this.questName, this.posX, this.posY+18);
-        
-        if(!this.quest.inputs.isEmpty()) {
-            for (QuestInput qi : this.quest.inputs)
+        g.drawRect(this.posX, this.posY, this.bubbleSize, 20);
+        g.drawString(this.questName, this.posX, this.posY + 18);
+
+        if (!this.quest.inputs.isEmpty()) {
+            for (QuestInput qi : this.quest.inputs) {
                 qi.draw(g);
+            }
         }
         if (!this.quest.outputs.isEmpty()) {
-            for (QuestOutput qo: this.quest.outputs)
+            for (QuestOutput qo : this.quest.outputs) {
                 qo.draw(g);
+            }
         }
-        
-        
+
     }
 }

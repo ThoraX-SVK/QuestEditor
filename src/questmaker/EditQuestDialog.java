@@ -23,24 +23,24 @@ public class EditQuestDialog extends Dialog implements ActionListener {
     Button addOutput;
     Button setName;
     Button addNewDecision;
-    
+
     public EditQuestDialog(QuestMainFrame owner, Quest quest) {
         super(owner);
         this.setModal(true);
         this.setSize(800, 600);
         this.setLocationRelativeTo(null);
         this.quest = quest;
-        
-        addWindowListener(new WindowAdapter ()
-                                {   public void windowClosing(WindowEvent e) {
-                                    
-                                    dispose();
-                                    }
-                                }
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+
+                dispose();
+            }
+        }
         );
-        
+
         Panel P = new Panel();
-        
+
         addInput = new Button("Pridaj Input");
         addInput.addActionListener(this);
         addOutput = new Button("Pridaj Output");
@@ -49,20 +49,19 @@ public class EditQuestDialog extends Dialog implements ActionListener {
         setName.addActionListener(this);
         addNewDecision = new Button("Pridaj nové rozhodnuie");
         addNewDecision.addActionListener(this);
-        
-        
+
         P.add(addInput);
-        P.add(Box.createRigidArea(new Dimension(50,0)));
+        P.add(Box.createRigidArea(new Dimension(50, 0)));
         P.add(setName);
         P.add(addNewDecision);
-        P.add(Box.createRigidArea(new Dimension(300,0)));
+        P.add(Box.createRigidArea(new Dimension(300, 0)));
         P.add(addOutput);
         P.setBackground(Color.BLACK);
-        this.add("South",P);
-        
+        this.add("South", P);
+
         eqdc = new EditQuestDialogCanvas(quest);
         this.add(eqdc);
-           
+
         this.setVisible(true);
     }
 
@@ -71,23 +70,19 @@ public class EditQuestDialog extends Dialog implements ActionListener {
         if (e.getSource() == addInput) {
             quest.addInput();
             eqdc.repaint();
-        }
-        else if (e.getSource() == addOutput) {
+        } else if (e.getSource() == addOutput) {
             quest.addOutput();
             eqdc.repaint();
-        }
-        else if (e.getSource() == setName) {
+        } else if (e.getSource() == setName) {
             RequestTextDialog rtd = new RequestTextDialog(null, 300, 200);
             quest.questBubble.questName = rtd.textArea.getText();
             quest.questBubble.update();
-        }
-        else if (e.getSource() == addNewDecision) {
+        } else if (e.getSource() == addNewDecision) {
             RequestTextDialog rtd = new RequestTextDialog(null, 300, 200);
-            Decision decision = new Decision("",rtd.textArea.getText(), 300, 300,Color.CYAN);
+            Decision decision = new Decision("", rtd.textArea.getText(), 300, 300, Color.CYAN);
             quest.decisions.add(decision);
             eqdc.repaint();
         }
     }
-    
-    
+
 }

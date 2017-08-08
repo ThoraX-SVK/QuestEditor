@@ -9,7 +9,7 @@ import java.awt.Point;
  * @author Tom
  */
 public class DecisionAddNewAnswerSign {
-    
+
     int posX;
     int posY;
     Decision belongsTo;
@@ -18,25 +18,25 @@ public class DecisionAddNewAnswerSign {
         this.belongsTo = belongsTo;
         updatePositon();
     }
-    
+
     public void updatePositon() {
-        this.posX = belongsTo.posX + belongsTo.size/2;
-        this.posY = belongsTo.posY + belongsTo.answers.size()*20 + 25;
+        this.posX = belongsTo.posX + belongsTo.size / 2;
+        this.posY = belongsTo.posY + belongsTo.answers.size() * 20 + 25;
     }
-    
+
     public void draw(Graphics g) {
         g.setColor(Color.GREEN);
-        g.fillRect(posX+3, posY, 4, 10);
-        g.fillRect(posX, posY+3, 10, 4);
+        g.fillRect(posX + 3, posY, 4, 10);
+        g.fillRect(posX, posY + 3, 10, 4);
     }
-    
+
     public boolean MouseOverlaps(Point mousePosition) {
-        return mousePosition.x > posX && mousePosition.x < posX+10 &&
-               mousePosition.y > posY && mousePosition.y < posY+10;
+        return mousePosition.x > posX && mousePosition.x < posX + 10
+                && mousePosition.y > posY && mousePosition.y < posY + 10;
     }
-    
+
     public void delete() {
         belongsTo = null;
     }
-    
+
 }

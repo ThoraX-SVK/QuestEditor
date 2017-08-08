@@ -24,24 +24,21 @@ public class DecisionInput {
         this.posY = inputToDecision.posY;
         this.id = decisionInputId;
         decisionInputId++;
-        this.color = Color.RED;        
+        this.color = Color.RED;
     }
-    
+
     public void updatePosition() {
         this.posX = inputToDecision.posX - size - 5;
         this.posY = inputToDecision.posY;
     }
-    
+
     public boolean MouseOverlaps(Point mousePosition) {
-        return mousePosition.x > posX && mousePosition.x < posX+size &&
-               mousePosition.y > posY && mousePosition.y < posY+size; // 20 -> Nahardkodene v paintbuffer() v QuestMainFrameDraw
+        return mousePosition.x > posX && mousePosition.x < posX + size
+                && mousePosition.y > posY && mousePosition.y < posY + size; // 20 -> Nahardkodene v paintbuffer() v QuestMainFrameDraw
     }
-    
+
     public void delete() {
         inputToDecision = null;
     }
-    
-    
-   
-   
+
 }

@@ -5,6 +5,7 @@ package questmaker;
  * @author Tom
  */
 public class LineAnswerDecision {
+
     AnswerOutput ao;
     DecisionInput di;
     QuestOutput qo;
@@ -24,20 +25,20 @@ public class LineAnswerDecision {
         this.di = di;
         this.qi = qi;
     }
-    
+
     public void delete() {
-        
-        if (qo != null)
+
+        if (qo != null) {
             qo.fromAnswerOutput = null;
-        if (ao != null)
+        }
+        if (ao != null) {
             ao.goingToDecision = null;
-        
+        }
+
         this.qo = null;
         this.qi = null;
         this.ao = null;
         this.di = null;
     }
-    
-    
-    
+
 }
