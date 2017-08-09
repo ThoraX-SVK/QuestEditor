@@ -31,7 +31,7 @@ public class QuestBubble {
     public void update() {
         this.bubbleSize = questName.length() * 13;
 
-        for (QuestOutputNew qo : quest.outputs) {
+        for (QuestOutput qo : quest.outputs) {
             qo.upadatePosition();
         }
     }
@@ -48,12 +48,12 @@ public class QuestBubble {
         g.drawString(this.questName, this.posX, this.posY + 18);
 
         if (!this.quest.inputs.isEmpty()) {
-            for (QuestInputNew qi : this.quest.inputs) {
+            for (QuestInput qi : this.quest.inputs) {
                 qi.draw(g);
             }
         }
         if (!this.quest.outputs.isEmpty()) {
-            for (QuestOutputNew qo : this.quest.outputs) {
+            for (QuestOutput qo : this.quest.outputs) {
                 qo.draw(g);
             }
         }

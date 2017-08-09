@@ -18,6 +18,8 @@ public class InputOutputSquare {
     public InputOutputSquare(int size, Color color) {
         this.size = size;
         this.color = color;
+        this.posX = 0;
+        this.posY = 0;
     }
 
     public boolean MouseOverlaps(Point mousePosition) {

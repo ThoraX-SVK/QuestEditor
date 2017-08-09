@@ -6,12 +6,12 @@ import java.awt.Color;
  *
  * @author Tom
  */
-public class AnswerOutputNew extends InputOutputSquare {
+public class AnswerOutput extends InputOutputSquare {
     
     Answer owner;
     InputOutputSquare target;
 
-    public AnswerOutputNew(Answer owner, int size, Color color) {
+    public AnswerOutput(Answer owner, int size, Color color) {
         super(size, color);
         this.owner = owner;
     }

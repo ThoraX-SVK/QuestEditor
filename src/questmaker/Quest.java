@@ -7,8 +7,8 @@ public class Quest {
 
     static int inputId = 0;
     static int outputId = 0;
-    LinkedList<QuestInputNew> inputs;
-    LinkedList<QuestOutputNew> outputs;
+    LinkedList<QuestInput> inputs;
+    LinkedList<QuestOutput> outputs;
     LinkedList<Decision> decisions;
     QuestBubble questBubble;
 
@@ -20,12 +20,12 @@ public class Quest {
     }
 
     public void addInput() {
-        inputs.add(new QuestInputNew(this, 10, Color.RED));
+        inputs.add(new QuestInput(this, 10, Color.RED));
         inputs.getLast().upadatePosition();     
     }
 
     public void addOutput() {
-       outputs.add(new QuestOutputNew(this, 10, Color.BLUE));
+       outputs.add(new QuestOutput(this, 10, Color.BLUE));
        outputs.getLast().upadatePosition();
     }
 

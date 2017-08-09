@@ -6,11 +6,11 @@ import java.awt.Color;
  *
  * @author Tom
  */
-public class DecisionInputNew extends  InputOutputSquare {
+public class DecisionInput extends  InputOutputSquare {
     
     Decision owner;
 
-    public DecisionInputNew(Decision owner, int size, Color color) {
+    public DecisionInput(Decision owner, int size, Color color) {
         super( size, color);
         this.owner = owner;
     }

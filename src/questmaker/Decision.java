@@ -20,7 +20,7 @@ public class Decision {
     int posY;
     int size;
     Color color;
-    DecisionInputNew decisionInput;
+    DecisionInput decisionInput;
     DecisionAddNewAnswerSign plusSign;
 
     public Decision(String question, String popis, int posX, int posY, Color c) {
@@ -32,7 +32,7 @@ public class Decision {
         this.size = popis.length() * 13;
         this.color = c;
         this.id = decisionId;
-        decisionInput = new DecisionInputNew(this, 10, Color.RED);
+        decisionInput = new DecisionInput(this, 10, Color.RED);
         decisionInput.updatePosition();
         plusSign = new DecisionAddNewAnswerSign(this);
         decisionId++;

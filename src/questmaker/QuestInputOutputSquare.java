@@ -8,14 +8,14 @@ import java.awt.Point;
  *
  * @author Tom
  */
-abstract public class QuestInputOutput extends InputOutputSquare {
+abstract public class QuestInputOutputSquare extends InputOutputSquare {
     
     Quest owner;
     int innerPosX;
     int innerPosY;
     int innerSize;
 
-    public QuestInputOutput(Quest owner, int size, Color color) {
+    public QuestInputOutputSquare(Quest owner, int size, Color color) {
         super(size, color);
         this.owner = owner;
         this.innerPosX = 0;

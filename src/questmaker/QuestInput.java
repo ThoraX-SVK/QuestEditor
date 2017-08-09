@@ -6,11 +6,11 @@ import java.awt.Color;
  *
  * @author Tom
  */
-public class QuestInputNew extends QuestInputOutput {
+public class QuestInput extends QuestInputOutputSquare {
 
-    DecisionInputNew target;
+    DecisionInput target;
     
-    public QuestInputNew(Quest owner, int size, Color color) {
+    public QuestInput(Quest owner, int size, Color color) {
         super(owner, size, color);
         this.target = null;
     }

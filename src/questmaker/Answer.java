@@ -12,7 +12,7 @@ public class Answer {
 
     static int answerId;
     Decision decision;
-    AnswerOutputNew output;
+    AnswerOutput output;
     String answer;
     String popis;
     int posX;
@@ -29,7 +29,7 @@ public class Answer {
         this.size = size;
         this.id = answerId;
         answerId++;
-        output = new AnswerOutputNew(this, 10, Color.BLUE);
+        output = new AnswerOutput(this, 10, Color.BLUE);
         output.updatePosition();
     }
 
