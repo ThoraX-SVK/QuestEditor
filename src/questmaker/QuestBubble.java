@@ -3,8 +3,9 @@ package questmaker;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.io.Serializable;
 
-public class QuestBubble {
+public class QuestBubble implements Serializable {
 
     String questName;
     int posX;

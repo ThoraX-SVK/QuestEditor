@@ -1,12 +1,13 @@
 package questmaker;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 /**
  *
  * @author Tom
  */
-public class AnswerOutput extends InputOutputSquare {
+public class AnswerOutput extends InputOutputSquare implements Serializable {
     
     Answer owner;
     InputOutputSquare target;

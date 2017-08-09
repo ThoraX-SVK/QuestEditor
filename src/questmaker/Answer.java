@@ -3,12 +3,13 @@ package questmaker;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.io.Serializable;
 
 /**
  *
  * @author Tom
  */
-public class Answer {
+public class Answer implements Serializable {
 
     static int answerId;
     Decision decision;

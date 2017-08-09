@@ -3,13 +3,14 @@ package questmaker;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.io.Serializable;
 import java.util.LinkedList;
 
 /**
  *
  * @author Tom
  */
-public class Decision {
+public class Decision implements Serializable {
 
     static int decisionId = 0;
     String question;

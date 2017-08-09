@@ -1,9 +1,10 @@
 package questmaker;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Quest {
+public class Quest implements Serializable {
 
     static int inputId = 0;
     static int outputId = 0;

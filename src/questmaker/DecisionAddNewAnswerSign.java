@@ -3,12 +3,13 @@ package questmaker;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.io.Serializable;
 
 /**
  *
  * @author Tom
  */
-public class DecisionAddNewAnswerSign {
+public class DecisionAddNewAnswerSign implements Serializable {
 
     int posX;
     int posY;

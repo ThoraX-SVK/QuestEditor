@@ -3,12 +3,13 @@ package questmaker;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.io.Serializable;
 
 /**
  *
  * @author Tom
  */
-abstract public class QuestInputOutputSquare extends InputOutputSquare {
+abstract public class QuestInputOutputSquare extends InputOutputSquare implements Serializable {
     
     Quest owner;
     int innerPosX;
