@@ -1,5 +1,7 @@
 package questmaker;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
 
 /**
@@ -10,7 +12,7 @@ public class Answer {
 
     static int answerId;
     Decision decision;
-    AnswerOutput output;
+    AnswerOutputNew output;
     String answer;
     String popis;
     int posX;
@@ -27,7 +29,8 @@ public class Answer {
         this.size = size;
         this.id = answerId;
         answerId++;
-        output = new AnswerOutput(this);
+        output = new AnswerOutputNew(this, 10, Color.BLUE);
+        output.updatePosition();
     }
 
     public void updatePosition() {
@@ -47,8 +50,16 @@ public class Answer {
     }
 
     public void delete() {
+        output.target = null;
         decision = null;
-        output.delete();
+    }
+    
+    public void draw (Graphics g) {
+        g.setColor(Color.YELLOW);
+        g.drawRect(this.posX, this.posY, this.size, 20);
+        g.drawString(this.popis, this.posX, this.posY + 18);
+
+        this.output.draw(g);
     }
 
 }

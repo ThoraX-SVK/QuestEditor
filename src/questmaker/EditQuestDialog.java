@@ -67,7 +67,7 @@ public class EditQuestDialog extends Dialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == addInput) {
+        if (e.getSource() == addInput) {          
             quest.addInput();
             eqdc.repaint();
         } else if (e.getSource() == addOutput) {

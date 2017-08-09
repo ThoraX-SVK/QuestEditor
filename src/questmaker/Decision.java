@@ -1,6 +1,7 @@
 package questmaker;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.util.LinkedList;
 
@@ -19,7 +20,7 @@ public class Decision {
     int posY;
     int size;
     Color color;
-    DecisionInput decisionInput;
+    DecisionInputNew decisionInput;
     DecisionAddNewAnswerSign plusSign;
 
     public Decision(String question, String popis, int posX, int posY, Color c) {
@@ -31,7 +32,8 @@ public class Decision {
         this.size = popis.length() * 13;
         this.color = c;
         this.id = decisionId;
-        decisionInput = new DecisionInput(this);
+        decisionInput = new DecisionInputNew(this, 10, Color.RED);
+        decisionInput.updatePosition();
         plusSign = new DecisionAddNewAnswerSign(this);
         decisionId++;
     }
@@ -84,9 +86,21 @@ public class Decision {
             an.delete();
         }
 
-        decisionInput.delete();
         plusSign.delete();
 
+    }
+    
+    public void draw(Graphics g) {
+        g.setColor(this.color);            
+        g.drawRect(this.posX, this.posY, this.size, 20);
+        g.drawString(this.popis, this.posX, this.posY + 18);
+        this.plusSign.draw(g);
+
+        this.decisionInput.draw(g);
+
+        for (Answer an : this.answers) {
+            an.draw(g);
+        }
     }
 
 }

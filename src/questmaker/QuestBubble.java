@@ -3,7 +3,6 @@ package questmaker;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import sun.nio.cs.ext.TIS_620;
 
 public class QuestBubble {
 
@@ -32,8 +31,8 @@ public class QuestBubble {
     public void update() {
         this.bubbleSize = questName.length() * 13;
 
-        for (int i = 0; i < quest.outputs.size(); i++) {
-            quest.outputs.get(i).updatePosition();
+        for (QuestOutputNew qo : quest.outputs) {
+            qo.upadatePosition();
         }
     }
 
@@ -49,12 +48,12 @@ public class QuestBubble {
         g.drawString(this.questName, this.posX, this.posY + 18);
 
         if (!this.quest.inputs.isEmpty()) {
-            for (QuestInput qi : this.quest.inputs) {
+            for (QuestInputNew qi : this.quest.inputs) {
                 qi.draw(g);
             }
         }
         if (!this.quest.outputs.isEmpty()) {
-            for (QuestOutput qo : this.quest.outputs) {
+            for (QuestOutputNew qo : this.quest.outputs) {
                 qo.draw(g);
             }
         }
