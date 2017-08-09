@@ -15,11 +15,10 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
 
     QuestMainFrame owner;
     LinkedList<QuestBubble> questBubbles;
-    LinkedList<LineOutputInput> lines;
     QuestBubble tempQuestBubble;
     QuestBubble lastMouseOver;
-    QuestOutput tempQuestOutput;
-    QuestInput tempQuesInput;
+    QuestOutputNew tempQuestOutput;
+    QuestInputNew tempQuesInput;
     Point tempLineEnd;
     boolean mouseButtonHoldOnQuestBuble;
     boolean mouseButtonHoldOnQuestOutput;
@@ -32,7 +31,6 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.questBubbles = questBubbles;
-        this.lines = new LinkedList<>();
         this.mouseButtonHoldOnQuestBuble = false;
         this.mouseButtonHoldOnQuestOutput = false;
         this.showDeleteZone = false;
@@ -53,18 +51,19 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
             g.drawLine(tempQuestOutput.posX + 5, tempQuestOutput.posY + 5,
                     tempLineEnd.x, tempLineEnd.y);
         }
+        
 
         if (!questBubbles.isEmpty()) {
             for (QuestBubble qb : questBubbles) {
                 qb.draw(g);
+                for (QuestOutputNew qo : qb.quest.outputs) {
+                    if (qo.target != null)
+                        drawLine(qo, qo.target, g);
+                }
+                   
             }
         }
 
-        if (!lines.isEmpty()) {
-            for (LineOutputInput loi : lines) {
-                loi.draw(g);
-            }
-        }
     }
 
     @Override
@@ -81,7 +80,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                 mouseButtonHoldOnQuestBuble = true;
                 showDeleteZone = true;
                 this.repaint();
-            } else if (tempQuestOutput != null && tempQuestOutput.goingToInput == null) {
+            } else if (tempQuestOutput != null && tempQuestOutput.target == null) {
                 tempQuestOutput.color = Color.WHITE;
                 mouseButtonHoldOnQuestOutput = true;
                 this.repaint();
@@ -94,26 +93,18 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
             if (tempQuestBubble != null) {
                 EditQuestDialog eqd = new EditQuestDialog(owner, tempQuestBubble.quest);
             } else if (tempQuestOutput != null) {
-                Set<LineOutputInput> toDelete = new HashSet<>();
-                LinkedList<QuestOutput> llqo = new LinkedList<>();
-                llqo.add(tempQuestOutput);
-                toDelete.addAll(selectLinesContainingOutputs(llqo, lines));
 
-                for (LineOutputInput loi : toDelete) {
-                    lines.remove(loi);
-                }
-
+                tempQuestOutput.target = null;
                 this.repaint();
             } else if (tempQuesInput != null) {
-                Set<LineOutputInput> toDelete = new HashSet<>();
-                LinkedList<QuestInput> llqi = new LinkedList<>();
-                llqi.add(tempQuesInput);
-                toDelete.addAll(selectLinesContainingInputs(llqi, lines));
 
-                for (LineOutputInput loi : toDelete) {
-                    lines.remove(loi);
+                for (QuestBubble qb : questBubbles) {
+                    for (QuestOutputNew qo : qb.quest.outputs) {
+                        if (qo.target == tempQuesInput) {
+                            qo.target = null;
+                        }
+                    }
                 }
-
                 this.repaint();
             }
 
@@ -128,14 +119,20 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
             if (e.getX() > this.getWidth() - 160 && e.getX() < this.getWidth() - 40
                     && e.getY() > this.getHeight() - 40 && e.getY() < this.getHeight() - 10) {
 
-                Set<LineOutputInput> toDelete = new HashSet<>();
-                toDelete.addAll(selectLinesContainingOutputs(tempQuestBubble.quest.outputs, lines));
-                toDelete.addAll(selectLinesContainingInputs(tempQuestBubble.quest.inputs, lines));
-
-                for (LineOutputInput loi : toDelete) {
-                    lines.remove(loi);
+                for (QuestInputNew qi: tempQuestBubble.quest.inputs) {
+                    for (QuestBubble qb : questBubbles) {
+                        for (QuestOutputNew qo : qb.quest.outputs) {
+                            if (qo.target == qi) {
+                                qo.target = null;
+                            }
+                        }
+                    }
                 }
-
+                
+                for (QuestOutputNew qo: tempQuestBubble.quest.outputs) {
+                    qo.target = null;
+                }
+ 
                 tempQuestBubble.delete();
                 questBubbles.remove(tempQuestBubble);
             } else {
@@ -146,13 +143,11 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
         }
         if (mouseButtonHoldOnQuestOutput) {
             tempQuestOutput.color = Color.BLUE;
-            QuestInput qi = selectInputOnMouseOver(e.getPoint());
+            QuestInputNew qi = selectInputOnMouseOver(e.getPoint());
             if (qi != null) {
-                LineOutputInput lineToCreate = new LineOutputInput(tempQuestOutput, qi);
-                lines.add(lineToCreate);
-                tempQuestOutput.setQi(qi);
+                tempQuestOutput.target = qi;
             }
-
+            
             tempQuestOutput = null;
             this.repaint();
         }
@@ -168,11 +163,11 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
         if (mouseButtonHoldOnQuestBuble) {
             tempQuestBubble.posX = e.getX() - tempQuestBubble.bubbleSize / 2;
             tempQuestBubble.posY = e.getY() - 10;   //NAHARDKODENE!!!!!!!!!
-            for (int i = 0; i < tempQuestBubble.quest.inputs.size(); i++) {
-                tempQuestBubble.quest.inputs.get(i).updatePosition();
+            for (QuestInputNew qi : tempQuestBubble.quest.inputs) {
+                qi.upadatePosition();
             }
-            for (int i = 0; i < tempQuestBubble.quest.outputs.size(); i++) {
-                tempQuestBubble.quest.outputs.get(i).updatePosition();
+            for (QuestOutputNew qo : tempQuestBubble.quest.outputs) {
+                qo.upadatePosition();
             }
             this.repaint();
         } else if (mouseButtonHoldOnQuestOutput) {
@@ -226,18 +221,13 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
         return bestBubble;
     }
 
-    private QuestOutput selectOutputOnMouseOver(Point mouseCursor) {
+    private QuestOutputNew selectOutputOnMouseOver(Point mouseCursor) {
         if (questBubbles.isEmpty()) {
             return null;
         }
 
-        QuestBubble actualQuestBubble;
-        QuestOutput qo;
-
-        for (int i = 0; i < questBubbles.size(); i++) {
-            actualQuestBubble = questBubbles.get(i);
-            for (int j = 0; j < actualQuestBubble.quest.outputs.size(); j++) {
-                qo = actualQuestBubble.quest.outputs.get(j);
+        for (QuestBubble qb : questBubbles) {
+            for (QuestOutputNew qo : qb.quest.outputs) {
                 if (qo.MouseOverlaps(mouseCursor)) {
                     return qo;
                 }
@@ -246,18 +236,13 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
         return null;
     }
 
-    private QuestInput selectInputOnMouseOver(Point mouseCursor) {
+    private QuestInputNew selectInputOnMouseOver(Point mouseCursor) {
         if (questBubbles.isEmpty()) {
             return null;
         }
 
-        QuestBubble actualQuestBubble;
-        QuestInput qi;
-
-        for (int i = 0; i < questBubbles.size(); i++) {
-            actualQuestBubble = questBubbles.get(i);
-            for (int j = 0; j < actualQuestBubble.quest.inputs.size(); j++) {
-                qi = actualQuestBubble.quest.inputs.get(j);
+        for (QuestBubble qb : questBubbles) {
+            for (QuestInputNew qi : qb.quest.inputs) {
                 if (qi.MouseOverlaps(mouseCursor)) {
                     return qi;
                 }
@@ -265,37 +250,10 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
         }
         return null;
     }
-
-    private Set<LineOutputInput> selectLinesContainingOutputs(LinkedList<QuestOutput> qos,
-            LinkedList<LineOutputInput> lines) {
-
-        Set<LineOutputInput> toSelect = new HashSet<>();
-
-        for (LineOutputInput loi : lines) {
-            for (QuestOutput qo : qos) {
-                if (loi.deleteIfContainsAtLeastOne(null, qo)) {
-                    toSelect.add(loi);
-                }
-            }
-        }
-
-        return toSelect;
-    }
-
-    private Set<LineOutputInput> selectLinesContainingInputs(LinkedList<QuestInput> qis,
-            LinkedList<LineOutputInput> lines) {
-
-        Set<LineOutputInput> toSelect = new HashSet<>();
-
-        for (LineOutputInput loi : lines) {
-            for (QuestInput qi : qis) {
-                if (loi.deleteIfContainsAtLeastOne(qi, null)) {
-                    toSelect.add(loi);
-                }
-            }
-        }
-
-        return toSelect;
+    
+    private void drawLine(QuestOutputNew qo,QuestInputNew qi, Graphics g) {
+        g.setColor(Color.WHITE);
+        g.drawLine(qo.posX+5, qo.posY+5, qi.posX+5, qi.posY+5);
     }
 
     private void drawDeleteZone(Graphics g) {

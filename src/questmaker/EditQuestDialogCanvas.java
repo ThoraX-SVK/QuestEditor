@@ -17,8 +17,8 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
     Decision tempDecision;
     Decision lastDecisionMouseOver;
     Point tempLineEnd;
-    AnswerOutput tempAnswerOutput;
-    QuestInput tempQuestInput;
+    AnswerOutputNew tempAnswerOutput;
+    QuestInputNew tempQuestInput;
     boolean mouseHoldDecisionSelected;
     boolean mouseHoldAnswerOutputSelected;
     boolean mouseHoldOnQuestInputSelected;
@@ -54,60 +54,35 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             }
         }
 
-        if (!quest.lines.isEmpty()) {
-            for (int i = 0; i < quest.lines.size(); i++) {
-                LineAnswerDecision lad = quest.lines.get(i);
-                g.setColor(Color.WHITE);
-                if (lad.di != null && lad.ao != null) {
-                    g.drawLine(lad.ao.posX + 5, lad.ao.posY + 5, lad.di.posX + 5, lad.di.posY + 5);
-                } else if (lad.qo != null && lad.ao != null) {
-                    g.drawLine(lad.ao.posX + 5, lad.ao.posY + 5, this.getWidth() - 16, 33 * quest.outputs.indexOf(lad.qo) + 16);
-                } else if (lad.qi != null && lad.di != null) {
-                    g.drawLine(15, 33 * quest.inputs.indexOf(lad.qi) + 15, lad.di.posX + 5, lad.di.posY + 5);
+        for (QuestInputNew qi : quest.inputs) {
+            if (qi.target != null) {
+                drawLine(qi, qi.target, g);
+            }
+        }
+
+        for (Decision de : quest.decisions) {
+            for (Answer an : de.answers) {
+                if (an.output != null) {
+                    drawLine(an.output, an.output.target, g);
                 }
-
             }
         }
 
-        if (!quest.inputs.isEmpty()) {
-            for (int i = 0; i < quest.inputs.size(); i++) {
-                QuestInput qi = quest.inputs.get(i);
-                g.setColor(Color.RED);
-                g.drawRect(0, 33 * i, 30, 30);
-            }
+        for (QuestInputNew qi : quest.inputs) {
+            qi.buildInnerSquare(quest.inputs.indexOf(qi), this.getWidth());
+            g.setColor(Color.RED);
+            qi.drawInner(g);
         }
 
-        if (!quest.outputs.isEmpty()) {
-            for (int i = 0; i < quest.outputs.size(); i++) {
-                QuestOutput qo = quest.outputs.get(i);
-                g.setColor(Color.BLUE);
-                g.drawRect(this.getWidth() - 30, 33 * i, 30, 30);
-            }
+        for (QuestOutputNew qo : quest.outputs) {
+            qo.buildInnerSquare(quest.outputs.indexOf(qo), this.getWidth());
+            g.setColor(Color.BLUE);
+            qo.drawInner(g);
         }
 
         if (!quest.decisions.isEmpty()) {
-            for (int i = 0; i < quest.decisions.size(); i++) {
-                Decision de = quest.decisions.get(i);
-                g.setColor(de.color);
-                g.setFont(new Font("OCR A Extended", 1, 20));
-                g.drawRect(de.posX, de.posY, de.size, 20);
-                g.drawString(de.popis, de.posX, de.posY + 18);
-                de.plusSign.draw(g);
-
-                g.setColor(Color.RED);
-                g.drawRect(de.decisionInput.posX, de.decisionInput.posY,
-                        de.decisionInput.size, de.decisionInput.size);
-
-                for (int j = 0; j < de.answers.size(); j++) {
-                    Answer ans = de.answers.get(j);
-                    g.setColor(Color.YELLOW);
-                    g.drawRect(ans.posX, ans.posY, ans.size, 20);
-                    g.drawString(ans.popis, ans.posX, ans.posY + 18);
-
-                    g.setColor(ans.output.color);
-                    g.drawRect(ans.output.posX, ans.output.posY,
-                            ans.output.size, ans.output.size);
-                }
+            for (Decision de :quest.decisions) {
+                de.draw(g);
             }
         }
 
@@ -138,8 +113,7 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                 mouseHoldDecisionSelected = true;
                 tempDecision.color = Color.RED;
                 this.repaint();
-            } else if (tempAnswerOutput != null && tempAnswerOutput.goingToDecision == null
-                    && tempAnswerOutput.goingToQuestOutput == null) {
+            } else if (tempAnswerOutput != null && tempAnswerOutput.target == null) {
                 mouseHoldAnswerOutputSelected = true;
                 tempAnswerOutput.color = Color.WHITE;
                 this.repaint();
@@ -147,7 +121,7 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                 plusSign.belongsTo.addAnswer("nova odpoved");
                 plusSign.belongsTo.updateAfterNewAnswer();
                 this.repaint();
-            } else if (tempQuestInput != null) {
+            } else if (tempQuestInput != null && tempQuestInput.target == null) {
                 mouseHoldOnQuestInputSelected = true;
                 tempQuestInput.color = Color.WHITE;
                 this.repaint();
@@ -170,36 +144,38 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
 
         if (tempAnswerOutput != null) {
             tempAnswerOutput.color = Color.BLUE;
-            DecisionInput di = selectDecisionInputOnMouseOver(e.getPoint());
-            QuestOutput qo = selectQuestOutputOnMouseOver(e.getPoint());
+            DecisionInputNew di = selectDecisionInputOnMouseOver(e.getPoint());
+            QuestOutputNew qo = selectQuestOutputOnMouseOver(e.getPoint());
             if (di != null) {
-                LineAnswerDecision tempLineToAdd = new LineAnswerDecision(tempAnswerOutput, di);
-                quest.lines.add(tempLineToAdd);
-                tempAnswerOutput.goingToDecision = di.inputToDecision;
+                tempAnswerOutput.target = di;
             } else if (qo != null) {
-                LineAnswerDecision tempLineToAdd = new LineAnswerDecision(tempAnswerOutput, qo);
-                quest.lines.add(tempLineToAdd);
-                tempAnswerOutput.goingToQuestOutput = qo;
+                tempAnswerOutput.target = qo;
             }
-        } else if (tempQuestInput != null) {
+        } else if (tempQuestInput != null && mouseHoldOnQuestInputSelected) {
             tempQuestInput.color = Color.RED;
-            DecisionInput di = selectDecisionInputOnMouseOver(e.getPoint());
-            LineAnswerDecision lad = new LineAnswerDecision(di, tempQuestInput);
-            quest.lines.add(lad);
+            DecisionInputNew di = selectDecisionInputOnMouseOver(e.getPoint());
+            tempQuestInput.target = di;
+
         } else if (tempDecision != null) {
             if (e.getX() > this.getWidth() - 160 && e.getX() < this.getWidth() - 40
                     && e.getY() > this.getHeight() - 40 && e.getY() < this.getHeight() - 10) {
 
-                Set<LineAnswerDecision> toDelete = new HashSet<>();
-                LinkedList<AnswerOutput> toSend = new LinkedList<>();
-                for (Answer a : tempDecision.answers) {
-                    toSend.add(a.output);
+                for (Decision de : quest.decisions) {
+                    for (Answer an : de.answers) {
+                        if (an.output.target == tempDecision.decisionInput) {
+                            an.output.target = null;
+                        }
+                    }
                 }
-                toDelete.addAll(selectLinesContainingAnswerOutput(toSend, quest.lines));
-                toDelete.addAll(selectLinsContainingDecisionInput(tempDecision.decisionInput, quest.lines));
 
-                for (LineAnswerDecision lad : toDelete) {
-                    lad.delete();
+                for (Answer an : tempDecision.answers) {
+                    an.output.target = null;
+                }
+
+                for (QuestInputNew qi : quest.inputs) {
+                    if (qi.target == tempDecision.decisionInput) {
+                        qi.target = null;
+                    }
                 }
 
                 tempDecision.delete();
@@ -262,6 +238,26 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         g.drawString("Delete", this.getWidth() - 140, this.getHeight() - 18);
     }
 
+    private void drawLine(InputOutputSquare square1, InputOutputSquare square2, Graphics g) {
+        g.setColor(Color.WHITE);
+        if (square1 instanceof QuestInputNew && square2 instanceof DecisionInputNew) {
+            QuestInputNew qi = (QuestInputNew) square1;
+            DecisionInputNew di = (DecisionInputNew) square2;
+
+            g.drawLine(qi.innerPosX + 15, qi.innerPosY + 15, di.posX + 5, di.posY + 5);
+        } else if (square1 instanceof AnswerOutputNew && square2 instanceof DecisionInputNew) {
+            AnswerOutputNew ao = (AnswerOutputNew) square1;
+            DecisionInputNew di = (DecisionInputNew) square2;
+
+            g.drawLine(ao.posX + 5, ao.posY + 5, di.posX + 5, di.posY + 5);
+        } else if (square1 instanceof AnswerOutputNew && square2 instanceof QuestOutputNew) {
+            AnswerOutputNew ao = (AnswerOutputNew) square1;
+            QuestOutputNew qo = (QuestOutputNew) square2;
+
+            g.drawLine(ao.posX + 5, ao.posY + 5, qo.innerPosX + 15, qo.innerPosY + 15);
+        }
+    }
+
     private Decision selectDecisionOnMouseOver(Point mouseCursor) {
         if (quest.decisions.isEmpty()) {
             return null;
@@ -278,7 +274,7 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         return null;
     }
 
-    private AnswerOutput selectAnswerOutputOnMouseOver(Point mouseCursor) {
+    private AnswerOutputNew selectAnswerOutputOnMouseOver(Point mouseCursor) {
         if (quest.decisions.isEmpty()) {
             return null;
         }
@@ -295,7 +291,7 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         return null;
     }
 
-    private DecisionInput selectDecisionInputOnMouseOver(Point mouseCursor) {
+    private DecisionInputNew selectDecisionInputOnMouseOver(Point mouseCursor) {
         if (quest.decisions.isEmpty()) {
             return null;
         }
@@ -341,67 +337,31 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         return null;
     }
 
-    private QuestOutput selectQuestOutputOnMouseOver(Point mouseCursor) {
+    private QuestOutputNew selectQuestOutputOnMouseOver(Point mouseCursor) {
         if (quest.outputs.isEmpty()) {
             return null;
         }
 
-        for (int i = 0; i < quest.outputs.size(); i++) {
-            int posX = this.getWidth() - 30;
-            int posY = i * 33;
-            int size = 30;
-
-            if (mouseCursor.x > posX && mouseCursor.x < posX + size
-                    && mouseCursor.y > posY && mouseCursor.y < posY + size) {
-                return quest.outputs.get(i);
+        for (QuestOutputNew qo : quest.outputs) {
+            if (qo.overlapsInner(mouseCursor)) {
+                return qo;
             }
         }
         return null;
     }
 
-    private QuestInput selectQuestInputOnMouseOver(Point mouseCursor) {
+    private QuestInputNew selectQuestInputOnMouseOver(Point mouseCursor) {
         if (quest.inputs.isEmpty()) {
             return null;
         }
 
-        for (int i = 0; i < quest.inputs.size(); i++) {
-            int posX = 0;
-            int posY = i * 33;
-            int size = 30;
-
-            if (mouseCursor.x > posX && mouseCursor.x < posX + size
-                    && mouseCursor.y > posY && mouseCursor.y < posY + size) {
-                return quest.inputs.get(i);
+        for (QuestInputNew qi : quest.inputs) {
+            if (qi.overlapsInner(mouseCursor)) {
+                return qi;
             }
         }
+
         return null;
-    }
-
-    private Set<LineAnswerDecision> selectLinesContainingAnswerOutput(LinkedList<AnswerOutput> aos,
-            LinkedList<LineAnswerDecision> lines) {
-        Set<LineAnswerDecision> toSelect = new HashSet<LineAnswerDecision>();
-
-        for (LineAnswerDecision lad : lines) {
-            for (AnswerOutput ao : aos) {
-                if (lad.ao == ao) {
-                    toSelect.add(lad);
-                }
-            }
-        }
-        return toSelect;
-    }
-
-    private Set<LineAnswerDecision> selectLinsContainingDecisionInput(DecisionInput di,
-            LinkedList<LineAnswerDecision> lines) {
-        Set<LineAnswerDecision> toSelect = new HashSet<LineAnswerDecision>();
-
-        for (LineAnswerDecision lad : lines) {
-            if (lad.di == di) {
-                toSelect.add(lad);
-            }
-        }
-        return toSelect;
-
     }
 
 }
