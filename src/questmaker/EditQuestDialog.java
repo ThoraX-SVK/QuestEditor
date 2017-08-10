@@ -47,7 +47,7 @@ public class EditQuestDialog extends Dialog implements ActionListener {
         addOutput.addActionListener(this);
         setName = new Button("Zmeniť názov");
         setName.addActionListener(this);
-        addNewDecision = new Button("Pridaj nové rozhodnuie");
+        addNewDecision = new Button("Pridaj nové rozhodnutie");
         addNewDecision.addActionListener(this);
 
         P.add(addInput);

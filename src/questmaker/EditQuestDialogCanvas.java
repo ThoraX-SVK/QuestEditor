@@ -133,7 +133,7 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                 DecisionEditDialog ded = new DecisionEditDialog(null, tempDecision);
                 this.repaint();
             } else if (an != null) {
-                RequestTextDialog rtg = new RequestTextDialog(null, 300, 200);
+                RequestTextDialogAnswer rtg = new RequestTextDialogAnswer(null, an.popis, 300, 200);
                 an.popis = rtg.textArea.getText();
                 this.repaint();
             } else if (tempQuestInput != null) {
