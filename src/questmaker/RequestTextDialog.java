@@ -17,30 +17,42 @@ import java.awt.event.WindowEvent;
  */
 public class RequestTextDialog extends Dialog implements ActionListener {
 
+   
     Button confirm;
-    TextArea textArea;
+    TextArea textArea; 
 
-    public RequestTextDialog(QuestMainFrame owner, int width, int height) {
+    public RequestTextDialog(QuestMainFrame owner, String lastText, int width, int height) {
+  
         super(owner);
         this.setModal(true);
         this.setSize(300, 200);
-
         this.setSize(width, height);
+
         this.setLocationRelativeTo(null);
 
         Panel P = new Panel();
-
+        
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 if ("".equals(textArea.getText())) {
-                    textArea.setText("null");
+                    textArea.setText("null"); 
                 }
+                
+                if (lastText != null) {
+                    textArea.setText(lastText);
+                }
+                
                 dispose();
             }
         }
         );
 
-        textArea = new TextArea("Insert text here");
+        if (lastText == null) {
+            textArea = new TextArea("Insert text here" );
+        } else {
+            textArea = new TextArea(lastText);
+        }
+  
         textArea.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {

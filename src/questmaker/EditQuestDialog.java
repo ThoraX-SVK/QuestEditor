@@ -47,7 +47,7 @@ public class EditQuestDialog extends Dialog implements ActionListener {
         addOutput.addActionListener(this);
         setName = new Button("Zmeniť názov");
         setName.addActionListener(this);
-        addNewDecision = new Button("Pridaj nové rozhodnuie");
+        addNewDecision = new Button("Pridaj nové rozhodnutie");
         addNewDecision.addActionListener(this);
 
         P.add(addInput);
@@ -74,11 +74,11 @@ public class EditQuestDialog extends Dialog implements ActionListener {
             quest.addOutput();
             eqdc.repaint();
         } else if (e.getSource() == setName) {
-            RequestTextDialog rtd = new RequestTextDialog(null, 300, 200);
+            RequestTextDialog rtd = new RequestTextDialog(null, null, 300, 200);
             quest.questBubble.questName = rtd.textArea.getText();
             quest.questBubble.update();
         } else if (e.getSource() == addNewDecision) {
-            RequestTextDialog rtd = new RequestTextDialog(null, 300, 200);
+            RequestTextDialog rtd = new RequestTextDialog(null, null, 300, 200);
             Decision decision = new Decision("", rtd.textArea.getText(), 300, 300, Color.CYAN);
             quest.decisions.add(decision);
             eqdc.repaint();

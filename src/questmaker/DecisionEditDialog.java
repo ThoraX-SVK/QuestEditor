@@ -2,6 +2,7 @@ package questmaker;
 
 import java.awt.Button;
 import java.awt.Dialog;
+import java.awt.Label;
 import java.awt.TextArea;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
@@ -28,7 +29,7 @@ public class DecisionEditDialog extends Dialog implements ActionListener {
         super(owner);
         this.decision = decision;
         this.answers = new LinkedList<>();
-        this.setSize(400, decision.answers.size() * 50 + 250);
+        this.setSize(400, decision.answers.size() * 50 + 300);
         this.setModal(true);
         this.setLocationRelativeTo(null);
 
@@ -48,13 +49,19 @@ public class DecisionEditDialog extends Dialog implements ActionListener {
         question = new TextArea(decision.question);
         question.setSize(400, 100);
 
+        Label popisLabel = new Label("Popis rozhodnutia:");
+        Label questionLabel = new Label("Otázka:");             // ine stringy? tieto su take divne
+        this.add(popisLabel); 
         this.add(popis);
+        this.add(questionLabel);
         this.add(question);
 
         for (int i = 0; i < decision.answers.size(); i++) {
+            Label tempLabel = new Label("Možnosť " + (i + 1) + ".:");
             TextField tf = new TextField(decision.answers.get(i).answer);
             answers.add(tf);
             tf.setSize(400, 50);
+            this.add(tempLabel);
             this.add(tf);
         }
 
