@@ -9,6 +9,7 @@ import java.io.Serializable;
  */
 public class QuestInput extends QuestInputOutputSquare implements Serializable {
 
+    static final long serialVersionUID = 42L;
     DecisionInput target;
     
     public QuestInput(Quest owner, int size, Color color) {
@@ -28,5 +29,11 @@ public class QuestInput extends QuestInputOutputSquare implements Serializable {
         this.innerPosY = posistionInLinkedList*33;
         this.innerSize = 30;
     }
+
+    public DecisionInput getTarget() {
+        return target;
+    }
+    
+    
     
 }

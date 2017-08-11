@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 abstract public class QuestInputOutputSquare extends InputOutputSquare implements Serializable {
     
+    static final long serialVersionUID = 42L;
     Quest owner;
     int innerPosX;
     int innerPosY;

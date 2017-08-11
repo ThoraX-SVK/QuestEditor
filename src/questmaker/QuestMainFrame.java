@@ -98,6 +98,7 @@ public class QuestMainFrame extends Frame implements ActionListener {
                 
                 try {
                 FileInputStream fis=new FileInputStream(FD.getDirectory() + FD.getFile());
+                //System.out.println(FD.getDirectory() + FD.getFile());
                 ObjectInputStream is = new ObjectInputStream(fis);
                     try {
                         

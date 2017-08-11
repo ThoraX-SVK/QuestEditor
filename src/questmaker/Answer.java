@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 public class Answer implements Serializable {
 
+    static final long serialVersionUID = 42L;
     static int answerId;
     Decision decision;
     AnswerOutput output;
@@ -62,5 +63,17 @@ public class Answer implements Serializable {
 
         this.output.draw(g);
     }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public AnswerOutput getOutput() {
+        return output;
+    }
+    
+    
+    
+    
 
 }

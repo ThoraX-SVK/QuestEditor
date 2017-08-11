@@ -9,6 +9,7 @@ import java.io.Serializable;
  */
 public class AnswerOutput extends InputOutputSquare implements Serializable {
     
+    static final long serialVersionUID = 42L;
     Answer owner;
     InputOutputSquare target;
 
@@ -21,6 +22,12 @@ public class AnswerOutput extends InputOutputSquare implements Serializable {
         posX = owner.posX + owner.size + 5;
         posY = owner.posY;
     }
+
+    public InputOutputSquare getTarget() {
+        return target;
+    }
+    
+    
     
    
 }

@@ -9,6 +9,7 @@ import java.util.LinkedList;
  */
 public class SaveFile implements Serializable {
     
+    static final long serialVersionUID = 42L;
     ProgramStart programStart;
     LinkedList<QuestBubble> questbubbles;
 
@@ -16,4 +17,14 @@ public class SaveFile implements Serializable {
         this.programStart = programStart;
         this.questbubbles = questbubbles;
     }
+
+    public ProgramStart getProgramStart() {
+        return programStart;
+    }
+
+    public LinkedList<QuestBubble> getQuestbubbles() {
+        return questbubbles;
+    }
+    
+    
 }

@@ -12,6 +12,7 @@ import java.util.LinkedList;
  */
 public class Decision implements Serializable {
 
+    static final long serialVersionUID = 42L;
     static int decisionId = 0;
     String question;
     String popis;
@@ -103,5 +104,17 @@ public class Decision implements Serializable {
             an.draw(g);
         }
     }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public LinkedList<Answer> getAnswers() {
+        return answers;
+    }
+    
+    
+    
+    
 
 }

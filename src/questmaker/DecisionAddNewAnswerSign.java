@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 public class DecisionAddNewAnswerSign implements Serializable {
 
+    static final long serialVersionUID = 42L;
     int posX;
     int posY;
     Decision belongsTo;

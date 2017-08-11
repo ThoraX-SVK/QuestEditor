@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 public class Quest implements Serializable {
 
+    static final long serialVersionUID = 42L;
     static int inputId = 0;
     static int outputId = 0;
     LinkedList<QuestInput> inputs;

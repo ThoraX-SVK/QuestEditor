@@ -9,11 +9,18 @@ import java.io.Serializable;
  */
 public class ProgramStart extends InputOutputSquare implements Serializable {
     
+    static final long serialVersionUID = 42L;
     QuestInput target;
 
     public ProgramStart(QuestInput target, int size, Color color) {
         super(size, color);
         this.target = target;
     }
+
+    public QuestInput getTarget() {
+        return target;
+    }
+    
+    
     
 }
