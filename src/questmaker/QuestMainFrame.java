@@ -67,7 +67,7 @@ public class QuestMainFrame extends Frame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         boolean test = true;
         if (e.getSource() == addQuestButton) {
-            RequestTextDialog rtd = new RequestTextDialog(this, 300, 300);
+            RequestTextDialog rtd = new RequestTextDialog(this, null, 300, 300);
             tempQuestBubble = new QuestBubble(rtd.textArea.getText(), 300, 300, Color.GREEN, null);
             questBubbles.add(tempQuestBubble);
             tempQuestBubble = null;
