@@ -38,15 +38,42 @@ public class GameDraw extends DoubleBuffer implements MouseListener, Runnable {
     QuestOutput tempQuestOutput;
     AnswerOutput tempAnswerOutput;
     DecisionInput tempDecisionInput;
-    
+
     LinkedList<AnswerBubble> answerBubbles;
+    boolean drawEndScreen;
+    String retry;
+    String exit;
+    MyRectangle retryRect;
+    MyRectangle exitRect;
 
     public GameDraw(SaveFile toLoad) {
         this.setBackground(Color.BLACK);
         this.addMouseListener(this);
 
         this.toLoad = toLoad;
-        answerBubbles = new LinkedList<>();
+        this.answerBubbles = new LinkedList<>();
+        this.drawEndScreen = false;
+
+        this.retry = "Start again";
+        this.retryRect = new MyRectangle(retry.length() * 20, Color.GREEN) {
+            @Override
+            public void draw(Graphics g) {
+                g.setColor(this.getColor());
+                g.drawRect(this.getPosX(), this.getPosY(), this.getSize(), 60);
+            }
+
+        };
+
+        this.exit = "Main Menu";
+
+        this.exitRect = new MyRectangle(exit.length() * 25, Color.RED) {
+            @Override
+            public void draw(Graphics g) {
+                g.setColor(this.getColor());
+                g.drawRect(this.getPosX(), this.getPosY(), this.getSize(), 60);
+            }
+
+        };
 
         questBubbles = this.toLoad.getQuestbubbles();
         start = this.toLoad.getProgramStart();
@@ -80,15 +107,19 @@ public class GameDraw extends DoubleBuffer implements MouseListener, Runnable {
                 }
             }
             this.repaint();
-        }
-        catch (NullPointerException ex) {
+        } catch (NullPointerException ex) {
             System.exit(0);
-            
+
         }
-              
+
     }
 
     public void paintBuffer(Graphics g) {
+
+        if (drawEndScreen) {
+            drawEndScreen(g);
+            return;
+        }
 
         if (toDraw != null) {
             question = toDraw.getQuestion();
@@ -102,10 +133,10 @@ public class GameDraw extends DoubleBuffer implements MouseListener, Runnable {
             for (int i = 0; i < answers.size(); i++) {
                 AnswerBubble ab = new AnswerBubble(Color.yellow, answers.get(i));
                 ab.setPosX(200);
-                ab.setPosY(250 + 33*i);
+                ab.setPosY(250 + 33 * i);
                 answerBubbles.add(ab);
             }
-            
+
             for (AnswerBubble ab : answerBubbles) {
                 ab.draw(g);
             }
@@ -122,12 +153,28 @@ public class GameDraw extends DoubleBuffer implements MouseListener, Runnable {
     @Override
     public void mousePressed(MouseEvent e) {
 
-        for (AnswerBubble ab : answerBubbles) {
-            if (ab.MouseOverlaps(e.getPoint())) {
-                current = ab.answer.getOutput().getTarget();
-                toDraw = null;
-                this.run();
+        if (!answers.isEmpty()) {
+            for (AnswerBubble ab : answerBubbles) {
+                if (ab.MouseOverlaps(e.getPoint())) {
+                    current = ab.answer.getOutput().getTarget();
+                    toDraw = null;
+                    this.run();
+                }
             }
+
+        } else if (drawEndScreen) {
+            if (retryRect.MouseOverlaps(e.getPoint())) {
+                resetState();
+            } else if (exitRect.MouseOverlaps(e.getPoint())) {
+                //back to main menu
+                System.exit(0);
+            }
+
+        } else {
+            //mrtvy bod, nie je tu žiadna odpoveď
+
+            drawEndScreen = true;
+            this.repaint();
         }
     }
 
@@ -144,6 +191,32 @@ public class GameDraw extends DoubleBuffer implements MouseListener, Runnable {
     @Override
     public void mouseExited(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void resetState() {
+
+        drawEndScreen = false;
+        current = null;
+        this.run();
+    }
+
+    private void drawEndScreen(Graphics g) {
+        g.setFont(new Font("Tw Cen MT Condensed", 1, 80));
+
+        g.setColor(Color.WHITE);
+        g.drawString("This is the end!", this.getWidth()/2 - "This is the end".length()*13 ,300);
+        
+        g.setFont(new Font("Tw Cen MT Condensed", 1, 50));
+        
+        retryRect.setPosX(this.getWidth() - 50 - retryRect.getSize());
+        retryRect.setPosY(this.getHeight() - 100);
+        retryRect.draw(g);
+        g.drawString(retry, retryRect.getPosX() + 13, retryRect.getPosY() + 45);
+
+        exitRect.setPosX(50);
+        exitRect.setPosY(retryRect.getPosY());
+        exitRect.draw(g);
+        g.drawString(exit, exitRect.getPosX() + 13, exitRect.getPosY() + 45);
     }
 
 }
