@@ -25,6 +25,9 @@ public class Answer implements Serializable {
     public Answer(Decision decision, String answer, String popis, int posX, int posY, int size) {
         this.decision = decision;
         this.answer = answer;
+        if ("".equals(answer)) {
+            this.answer = "null";
+        }
         this.popis = popis;
         this.posX = posX;
         this.posY = posY;

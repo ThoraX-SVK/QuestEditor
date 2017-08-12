@@ -27,6 +27,10 @@ public class Decision implements Serializable {
 
     public Decision(String question, String popis, int posX, int posY, Color c) {
         this.question = question;
+        
+        if ("".equals(question)) {
+            this.question = "";
+        }
         this.popis = popis;
         this.answers = new LinkedList<>();
         this.posX = posX;
