@@ -7,7 +7,7 @@ import java.io.Serializable;
  *
  * @author Tom
  */
-public class ProgramStart extends InputOutputSquare implements Serializable {
+public class ProgramStart extends MyRectangle implements Serializable {
     
     static final long serialVersionUID = 42L;
     QuestInput target;

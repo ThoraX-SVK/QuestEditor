@@ -270,7 +270,7 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         g.drawString("Delete", this.getWidth() - 140, this.getHeight() - 18);
     }
 
-    private void drawLine(InputOutputSquare square1, InputOutputSquare square2, Graphics g) {
+    private void drawLine(MyRectangle square1, MyRectangle square2, Graphics g) {
         g.setColor(Color.WHITE);
         if (square1 instanceof QuestInput && square2 instanceof DecisionInput) {
             QuestInput qi = (QuestInput) square1;
