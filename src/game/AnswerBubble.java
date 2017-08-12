@@ -2,6 +2,7 @@ package game;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import questmaker.Answer;
 import questmaker.MyRectangle;
 
@@ -23,6 +24,12 @@ public class AnswerBubble extends MyRectangle {
         g.setColor(this.getColor());
         g.drawRect(this.getPosX(), this.getPosY(), this.getSize(), 25);
         g.drawString(answer.getAnswer(),this.getPosX()+2 , this.getPosY()+20);
+    }
+    
+    @Override
+    public boolean MouseOverlaps(Point mousePosition) {
+        return mousePosition.x > this.getPosX() && mousePosition.x < this.getPosX() + this.getSize()
+                && mousePosition.y > this.getPosY() && mousePosition.y < this.getPosY() + 25;
     }
     
     

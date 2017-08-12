@@ -108,12 +108,12 @@ public class GameDraw extends DoubleBuffer implements MouseListener, Runnable {
             }
             this.repaint();
         } catch (NullPointerException ex) {
-            System.exit(0);
-
+            endScreenRoutine();
         }
 
     }
 
+    @Override
     public void paintBuffer(Graphics g) {
 
         if (drawEndScreen) {
@@ -152,16 +152,25 @@ public class GameDraw extends DoubleBuffer implements MouseListener, Runnable {
 
     @Override
     public void mousePressed(MouseEvent e) {
+        
+        if (answers != null) {
+            if (!answers.isEmpty()) {
+                for (AnswerBubble ab : answerBubbles) {
+                    if (ab.MouseOverlaps(e.getPoint())) {
+                        current = ab.answer.getOutput().getTarget();
 
-        if (!answers.isEmpty()) {
-            for (AnswerBubble ab : answerBubbles) {
-                if (ab.MouseOverlaps(e.getPoint())) {
-                    current = ab.answer.getOutput().getTarget();
-                    toDraw = null;
-                    this.run();
+                        if (current == null) {  /* Output pre danú answer nemá target */
+                            endScreenRoutine();
+                        }
+
+                        toDraw = null;
+                        this.run();
+                    }
                 }
             }
-
+            else {
+                endScreenRoutine();
+            }
         } else if (drawEndScreen) {
             if (retryRect.MouseOverlaps(e.getPoint())) {
                 resetState();
@@ -173,9 +182,9 @@ public class GameDraw extends DoubleBuffer implements MouseListener, Runnable {
         } else {
             //mrtvy bod, nie je tu žiadna odpoveď
 
-            drawEndScreen = true;
-            this.repaint();
+            endScreenRoutine();
         }
+        
     }
 
     @Override
@@ -217,6 +226,13 @@ public class GameDraw extends DoubleBuffer implements MouseListener, Runnable {
         exitRect.setPosY(retryRect.getPosY());
         exitRect.draw(g);
         g.drawString(exit, exitRect.getPosX() + 13, exitRect.getPosY() + 45);
+    }
+    
+    private void endScreenRoutine() {
+        
+        answers = null;
+        drawEndScreen = true;
+        this.repaint();
     }
 
 }
