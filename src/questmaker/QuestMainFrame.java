@@ -17,6 +17,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import javax.swing.Box;
+import mainMenu.MainMenuFrame;
 
 public class QuestMainFrame extends Frame implements ActionListener {
 
@@ -34,7 +35,8 @@ public class QuestMainFrame extends Frame implements ActionListener {
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
 
-                System.exit(0);
+                MainMenuFrame mmf = new MainMenuFrame();
+                dispose();
             }
         }
         );

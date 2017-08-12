@@ -109,6 +109,7 @@ public class GameDraw extends DoubleBuffer implements MouseListener, Runnable {
                     toDraw = tempQuestOutput.getTarget().getTarget().getOwner();
                 }
             }
+            
             this.repaint();
         } catch (NullPointerException ex) {
             endScreenRoutine();
@@ -160,7 +161,7 @@ public class GameDraw extends DoubleBuffer implements MouseListener, Runnable {
             if (!answers.isEmpty()) {
                 for (AnswerBubble ab : answerBubbles) {
                     if (ab.MouseOverlaps(e.getPoint())) {
-                        current = ab.answer.getOutput().getTarget();
+                        current = ab.answer.getOutput();
 
                         if (current == null) {  /* Output pre danú answer nemá target */
                             endScreenRoutine();
