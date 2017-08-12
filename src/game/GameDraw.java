@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.LinkedList;
+import mainMenu.MainMenuFrame;
 import questmaker.Answer;
 import questmaker.AnswerOutput;
 import questmaker.Decision;
@@ -24,6 +25,7 @@ import questmaker.SaveFile;
  */
 public class GameDraw extends DoubleBuffer implements MouseListener, Runnable {
 
+    GameFrame owner;
     SaveFile toLoad;
     LinkedList<QuestBubble> questBubbles;
     ProgramStart start;
@@ -46,10 +48,11 @@ public class GameDraw extends DoubleBuffer implements MouseListener, Runnable {
     MyRectangle retryRect;
     MyRectangle exitRect;
 
-    public GameDraw(SaveFile toLoad) {
+    public GameDraw(SaveFile toLoad, GameFrame owner) {
         this.setBackground(Color.BLACK);
         this.addMouseListener(this);
 
+        this.owner = owner;
         this.toLoad = toLoad;
         this.answerBubbles = new LinkedList<>();
         this.drawEndScreen = false;
@@ -176,7 +179,8 @@ public class GameDraw extends DoubleBuffer implements MouseListener, Runnable {
                 resetState();
             } else if (exitRect.MouseOverlaps(e.getPoint())) {
                 //back to main menu
-                System.exit(0);
+                MainMenuFrame mmf = new MainMenuFrame();
+                owner.dispose();
             }
 
         } else {

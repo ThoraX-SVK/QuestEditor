@@ -1,17 +1,18 @@
-package game;
+package mainMenu;
 
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import questmaker.SaveFile;
 
-
-public class GameFrame extends Frame {
-
-    public GameDraw gd;
+/**
+ *
+ * @author Tom
+ */
+public class MainMenuFrame extends Frame {
     
+    MainMenuCanvas mmc;
     
-    public GameFrame(SaveFile save) {
+    public MainMenuFrame() {
         this.setSize(900,600);
         this.setLocationRelativeTo(null);
         
@@ -23,8 +24,8 @@ public class GameFrame extends Frame {
         }
         );
         
-        gd = new GameDraw(save,this);
-        this.add(gd);
+        mmc = new MainMenuCanvas(this);
+        this.add(mmc);
         
         
         this.setVisible(true);
