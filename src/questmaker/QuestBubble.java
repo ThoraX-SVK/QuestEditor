@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 public class QuestBubble implements Serializable {
 
+    static final long serialVersionUID = 42L;
     String questName;
     int posX;
     int posY;

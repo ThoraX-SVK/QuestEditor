@@ -7,10 +7,11 @@ import java.io.Serializable;
  *
  * @author Tom
  */
-public class AnswerOutput extends InputOutputSquare implements Serializable {
+public class AnswerOutput extends MyRectangle implements Serializable {
     
+    static final long serialVersionUID = 42L;
     Answer owner;
-    InputOutputSquare target;
+    MyRectangle target;
 
     public AnswerOutput(Answer owner, int size, Color color) {
         super(size, color);
@@ -21,6 +22,12 @@ public class AnswerOutput extends InputOutputSquare implements Serializable {
         posX = owner.posX + owner.size + 5;
         posY = owner.posY;
     }
+
+    public MyRectangle getTarget() {
+        return target;
+    }
+    
+    
     
    
 }

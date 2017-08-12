@@ -1,10 +1,13 @@
 package questmaker;
 
-public class QuestMaker {
+import mainMenu.MainMenuFrame;
 
+public class QuestMaker {
+    
+  
     public static void main(String[] args) {
 
-        QuestMainFrame QMF = new QuestMainFrame();
+        MainMenuFrame mmf = new MainMenuFrame();   
     }
 
 }
