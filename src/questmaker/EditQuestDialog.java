@@ -79,8 +79,9 @@ public class EditQuestDialog extends Dialog implements ActionListener {
             quest.questBubble.update();
         } else if (e.getSource() == addNewDecision) {
             RequestTextDialog rtd = new RequestTextDialog(null, null, 300, 200);
-            Decision decision = new Decision("", rtd.textArea.getText(), 300, 300, Color.CYAN);
-            quest.decisions.add(decision);
+            Decision de = new Decision("", rtd.textArea.getText(), 300, 300, 0, 0, Color.CYAN);
+            de.update();
+            quest.decisions.add(de);
             eqdc.repaint();
         }
     }

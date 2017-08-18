@@ -15,16 +15,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.LinkedList;
 import javax.swing.Box;
 import mainMenu.MainMenuFrame;
 
 public class QuestMainFrame extends Frame implements ActionListener {
 
     QuestMainFrameCanvas qmfc;
-    LinkedList<QuestBubble> questBubbles;
     QuestBubble tempQuestBubble;
     Button addQuestButton;
+    Button addRandomBlock;
     Button Save;
     Button Load;
 
@@ -41,8 +40,7 @@ public class QuestMainFrame extends Frame implements ActionListener {
         }
         );
 
-        questBubbles = new LinkedList<>();
-        qmfc = new QuestMainFrameCanvas(questBubbles, this);
+        qmfc = new QuestMainFrameCanvas(this);
         this.add(qmfc);
         
         Panel P = new Panel();
@@ -51,6 +49,9 @@ public class QuestMainFrame extends Frame implements ActionListener {
         addQuestButton = new Button("Pridaj Quest");
         addQuestButton.addActionListener(this);
         P.add(addQuestButton);
+        addRandomBlock = new Button("Pridaj RAND blok");
+        addRandomBlock.addActionListener(this);
+        P.add(addRandomBlock);
         P.add(Box.createRigidArea(new Dimension(350, 0)));
         Save = new Button("Uloz");
         Save.addActionListener(this);
@@ -59,6 +60,8 @@ public class QuestMainFrame extends Frame implements ActionListener {
         Load = new Button("Nacitaj");
         Load.addActionListener(this);
         P.add(Load);
+        
+        
         
         this.add("South", P);
 
@@ -70,9 +73,14 @@ public class QuestMainFrame extends Frame implements ActionListener {
         boolean test = true;
         if (e.getSource() == addQuestButton) {
             RequestTextDialog rtd = new RequestTextDialog(this, null, 300, 300);
-            tempQuestBubble = new QuestBubble(rtd.textArea.getText(), 300, 300, Color.GREEN, null);
-            questBubbles.add(tempQuestBubble);
+            tempQuestBubble = new QuestBubble(rtd.textArea.getText(), 300, 300, 0, 20, Color.GREEN);
+            qmfc.blockToDraw.add(tempQuestBubble);
             tempQuestBubble = null;
+            qmfc.repaint();
+        } else if (e.getSource() == addRandomBlock) {
+            FunctionBlockRandom fbr = new FunctionBlockRandom(300, 300, 0, 20, Color.GRAY);
+            fbr.setWidth(fbr.functionName.length() * 14);
+            qmfc.blockToDraw.add(fbr);
             qmfc.repaint();
         }
         else if (e.getSource() == Save) {
@@ -83,7 +91,7 @@ public class QuestMainFrame extends Frame implements ActionListener {
                 try {
                     FileOutputStream fos=new FileOutputStream(FD.getDirectory() + FD.getFile());
                     try (ObjectOutputStream os = new ObjectOutputStream(fos)) {
-                        SaveFile toSave = new SaveFile(qmfc.programStart, questBubbles);
+                        SaveFile toSave = new SaveFile(qmfc.programStart, qmfc.blockToDraw);
                         os.writeObject(toSave);   
                     }
                 }
@@ -106,8 +114,7 @@ public class QuestMainFrame extends Frame implements ActionListener {
                         
                         SaveFile file= (SaveFile)is.readObject();
                         cleanupBeforeLoad();
-                        questBubbles = file.questbubbles;
-                        qmfc.questBubbles = file.questbubbles;
+                        qmfc.blockToDraw = file.blocksToDraw;
                         qmfc.programStart = file.programStart;
                         qmfc.repaint();
                         
@@ -124,12 +131,10 @@ public class QuestMainFrame extends Frame implements ActionListener {
     }
     
     private void cleanupBeforeLoad() {
-        questBubbles.clear();
-        questBubbles = null;
+        qmfc.blockToDraw.clear();
+        qmfc.blockToDraw = null;
         qmfc.programStart = null;
         qmfc.lastMouseOver = null;
-        qmfc.questBubbles = null;
-        qmfc.tempQuesInput = null;
         qmfc.mouseButtonHoldOnQuestBuble = false;
         qmfc.mouseButtonHoldOnQuestOutput = false;
         qmfc.showDeleteZone = false;

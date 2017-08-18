@@ -10,22 +10,18 @@ import java.util.LinkedList;
  *
  * @author Tom
  */
-public class Decision implements Serializable {
+public class Decision extends _Rectangle implements Serializable {
 
     static final long serialVersionUID = 42L;
     static int decisionId = 0;
     String question;
     String popis;
     LinkedList<Answer> answers;
-    int id;
-    int posX;
-    int posY;
-    int size;
-    Color color;
-    DecisionInput decisionInput;
+    _DecisionInput decisionInput;
     DecisionAddNewAnswerSign plusSign;
 
-    public Decision(String question, String popis, int posX, int posY, Color c) {
+    public Decision(String question, String popis, int posX, int posY, int width, int height, Color c) {
+        super(posX, posY, popis.length() * 13, 20, c);
         this.question = question;
         
         if ("".equals(question)) {
@@ -33,31 +29,21 @@ public class Decision implements Serializable {
         }
         this.popis = popis;
         this.answers = new LinkedList<>();
-        this.posX = posX;
-        this.posY = posY;
-        this.size = popis.length() * 13;
-        this.color = c;
-        this.id = decisionId;
-        decisionInput = new DecisionInput(this, 10, Color.RED);
+        decisionInput = new _DecisionInput(this,0,0,10,10,Color.RED);
         decisionInput.updatePosition();
         plusSign = new DecisionAddNewAnswerSign(this);
-        decisionId++;
     }
 
     public void addAnswer(String text) {
-        Answer answer = new Answer(this, "", text, posX, posY + 20 * answers.size() + 20, size);
+        Answer answer = new Answer(this, "", text, posX, posY + 20 * answers.size() + 20,
+                this.width,this.height,Color.YELLOW);
         this.answers.add(answer);
-    }
-
-    public boolean MouseOverlaps(Point mousePosition) {
-        return mousePosition.x > posX && mousePosition.x < posX + size
-                && mousePosition.y > posY && mousePosition.y < posY + 20; // 20 -> Nahardkodene v paintbuffer() v QuestMainFrameDraw
     }
 
     public void updatePosition(Point mouseCursor) {
 
-        posX = mouseCursor.x - this.size / 2;
-        posY = mouseCursor.y - 10;
+        posX = mouseCursor.x - this.width / 2;
+        posY = mouseCursor.y - this.height / 2;
 
         this.decisionInput.updatePosition();
         this.plusSign.updatePositon();
@@ -78,7 +64,7 @@ public class Decision implements Serializable {
 
     public void update() {
 
-        this.size = popis.length() * 13;
+        this.width = popis.length() * 13;
         for (int i = 0; i < answers.size(); i++) {
             answers.get(i).updateSize();
         }
@@ -96,12 +82,11 @@ public class Decision implements Serializable {
 
     }
     
+    @Override
     public void draw(Graphics g) {
-        g.setColor(this.color);            
-        g.drawRect(this.posX, this.posY, this.size, 20);
+        super.draw(g);
         g.drawString(this.popis, this.posX, this.posY + 18);
         this.plusSign.draw(g);
-
         this.decisionInput.draw(g);
 
         for (Answer an : this.answers) {

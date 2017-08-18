@@ -7,9 +7,6 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
 
 public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener, MouseMotionListener {
 
@@ -17,8 +14,8 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
     Decision tempDecision;
     Decision lastDecisionMouseOver;
     Point tempLineEnd;
-    AnswerOutput tempAnswerOutput;
-    QuestInput tempQuestInput;
+    _AnswerOuput tempAnswerOutput;
+    _QuestInput tempQuestInput;
     boolean mouseHoldDecisionSelected;
     boolean mouseHoldAnswerOutputSelected;
     boolean mouseHoldOnQuestInputSelected;
@@ -54,9 +51,9 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             }
         }
 
-        for (QuestInput qi : quest.inputs) {
+        for (_QuestInput qi : quest.inputs) {
             if (qi.target != null) {
-                drawLine(qi, qi.target, g);
+                drawLine(qi, qi.getTarget(), g);
             }
         }
 
@@ -68,13 +65,13 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             }
         }
 
-        for (QuestInput qi : quest.inputs) {
+        for (_QuestInput qi : quest.inputs) {
             qi.buildInnerSquare(quest.inputs.indexOf(qi), this.getWidth());
             g.setColor(Color.RED);
             qi.drawInner(g);
         }
 
-        for (QuestOutput qo : quest.outputs) {
+        for (_QuestOutput qo : quest.outputs) {
             qo.buildInnerSquare(quest.outputs.indexOf(qo), this.getWidth());
             g.setColor(Color.BLUE);
             qo.drawInner(g);
@@ -100,8 +97,8 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         tempAnswerOutput = selectAnswerOutputOnMouseOver(e.getPoint());
         DecisionAddNewAnswerSign plusSign = selectPlusSign(e.getPoint());
         Answer an = selectAnswerOnMouseOver(e.getPoint());
-        DecisionInput di = selectDecisionInputOnMouseOver(e.getPoint());
-        QuestOutput qo = selectQuestOutputOnMouseOver(e.getPoint());
+        _DecisionInput di = selectDecisionInputOnMouseOver(e.getPoint());
+        _QuestOutput qo = selectQuestOutputOnMouseOver(e.getPoint());
         tempQuestInput = selectQuestInputOnMouseOver(e.getPoint());
 
         if (tempDecision == null && tempAnswerOutput == null && plusSign == null
@@ -150,7 +147,7 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                     }
                 }
 
-                for (QuestInput qi : quest.inputs) {
+                for (_QuestInput qi : quest.inputs) {
                     if (qi.target == di) {
                         qi.target = null;
                     }
@@ -176,8 +173,8 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
 
         if (tempAnswerOutput != null) {
             tempAnswerOutput.color = Color.BLUE;
-            DecisionInput di = selectDecisionInputOnMouseOver(e.getPoint());
-            QuestOutput qo = selectQuestOutputOnMouseOver(e.getPoint());
+            _DecisionInput di = selectDecisionInputOnMouseOver(e.getPoint());
+            _QuestOutput qo = selectQuestOutputOnMouseOver(e.getPoint());
             if (di != null) {
                 tempAnswerOutput.target = di;
             } else if (qo != null) {
@@ -185,7 +182,7 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             }
         } else if (tempQuestInput != null && mouseHoldOnQuestInputSelected) {
             tempQuestInput.color = Color.RED;
-            DecisionInput di = selectDecisionInputOnMouseOver(e.getPoint());
+            _DecisionInput di = selectDecisionInputOnMouseOver(e.getPoint());
             tempQuestInput.target = di;
 
         } else if (tempDecision != null) {
@@ -204,7 +201,7 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                     an.output.target = null;
                 }
 
-                for (QuestInput qi : quest.inputs) {
+                for (_QuestInput qi : quest.inputs) {
                     if (qi.target == tempDecision.decisionInput) {
                         qi.target = null;
                     }
@@ -270,21 +267,21 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         g.drawString("Delete", this.getWidth() - 140, this.getHeight() - 18);
     }
 
-    private void drawLine(MyRectangle square1, MyRectangle square2, Graphics g) {
+    private void drawLine(_Rectangle square1, _Rectangle square2, Graphics g) {
         g.setColor(Color.WHITE);
-        if (square1 instanceof QuestInput && square2 instanceof DecisionInput) {
-            QuestInput qi = (QuestInput) square1;
-            DecisionInput di = (DecisionInput) square2;
+        if (square1 instanceof _QuestInput && square2 instanceof _DecisionInput) {
+            _QuestInput qi = (_QuestInput) square1;
+            _DecisionInput di = (_DecisionInput) square2;
 
             g.drawLine(qi.innerPosX + 15, qi.innerPosY + 15, di.posX + 5, di.posY + 5);
-        } else if (square1 instanceof AnswerOutput && square2 instanceof DecisionInput) {
-            AnswerOutput ao = (AnswerOutput) square1;
-            DecisionInput di = (DecisionInput) square2;
+        } else if (square1 instanceof _AnswerOuput && square2 instanceof _DecisionInput) {
+            _AnswerOuput ao = (_AnswerOuput) square1;
+            _DecisionInput di = (_DecisionInput) square2;
 
             g.drawLine(ao.posX + 5, ao.posY + 5, di.posX + 5, di.posY + 5);
-        } else if (square1 instanceof AnswerOutput && square2 instanceof QuestOutput) {
-            AnswerOutput ao = (AnswerOutput) square1;
-            QuestOutput qo = (QuestOutput) square2;
+        } else if (square1 instanceof _AnswerOuput && square2 instanceof _QuestOutput) {
+            _AnswerOuput ao = (_AnswerOuput) square1;
+            _QuestOutput qo = (_QuestOutput) square2;
 
             g.drawLine(ao.posX + 5, ao.posY + 5, qo.innerPosX + 15, qo.innerPosY + 15);
         }
@@ -298,7 +295,7 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         Decision de = null;
         for (int i = 0; i < quest.decisions.size(); i++) {
             de = quest.decisions.get(i);
-            if (de.MouseOverlaps(mouseCursor)) {
+            if (de.isMouseOver(mouseCursor)) {
                 return de;
             }
         }
@@ -306,7 +303,7 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         return null;
     }
 
-    private AnswerOutput selectAnswerOutputOnMouseOver(Point mouseCursor) {
+    private _AnswerOuput selectAnswerOutputOnMouseOver(Point mouseCursor) {
         if (quest.decisions.isEmpty()) {
             return null;
         }
@@ -315,7 +312,7 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             Decision de = quest.decisions.get(i);
             for (int j = 0; j < de.answers.size(); j++) {
                 Answer an = de.answers.get(j);
-                if (an.output.MouseOverlaps(mouseCursor)) {
+                if (an.output.isMouseOver(mouseCursor)) {
                     return an.output;
                 }
             }
@@ -323,13 +320,13 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         return null;
     }
 
-    private DecisionInput selectDecisionInputOnMouseOver(Point mouseCursor) {
+    private _DecisionInput selectDecisionInputOnMouseOver(Point mouseCursor) {
         if (quest.decisions.isEmpty()) {
             return null;
         }
 
         for (Decision de : quest.decisions) {
-            if (de.decisionInput.MouseOverlaps(mouseCursor)) {
+            if (de.decisionInput.isMouseOver(mouseCursor)) {
                 return de.decisionInput;
             }
         }
@@ -360,7 +357,7 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             Decision de = quest.decisions.get(i);
             for (int j = 0; j < de.answers.size(); j++) {
                 Answer an = de.answers.get(j);
-                if (an.MouseOverlaps(mouseCursor)) {
+                if (an.isMouseOver(mouseCursor)) {
                     return an;
                 }
             }
@@ -368,26 +365,26 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         return null;
     }
 
-    private QuestOutput selectQuestOutputOnMouseOver(Point mouseCursor) {
+    private _QuestOutput selectQuestOutputOnMouseOver(Point mouseCursor) {
         if (quest.outputs.isEmpty()) {
             return null;
         }
 
-        for (QuestOutput qo : quest.outputs) {
-            if (qo.overlapsInner(mouseCursor)) {
+        for (_QuestOutput qo : quest.outputs) {
+            if (qo.isMouseOverInner(mouseCursor)) {
                 return qo;
             }
         }
         return null;
     }
 
-    private QuestInput selectQuestInputOnMouseOver(Point mouseCursor) {
+    private _QuestInput selectQuestInputOnMouseOver(Point mouseCursor) {
         if (quest.inputs.isEmpty()) {
             return null;
         }
 
-        for (QuestInput qi : quest.inputs) {
-            if (qi.overlapsInner(mouseCursor)) {
+        for (_QuestInput qi : quest.inputs) {
+            if (qi.isMouseOverInner(mouseCursor)) {
                 return qi;
             }
         }

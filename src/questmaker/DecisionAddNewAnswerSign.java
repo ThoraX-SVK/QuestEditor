@@ -22,7 +22,7 @@ public class DecisionAddNewAnswerSign implements Serializable {
     }
 
     public void updatePositon() {
-        this.posX = belongsTo.posX + belongsTo.size / 2;
+        this.posX = belongsTo.posX + belongsTo.width / 2;
         this.posY = belongsTo.posY + belongsTo.answers.size() * 20 + 25;
     }
 

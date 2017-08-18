@@ -7,17 +7,17 @@ import java.io.Serializable;
  *
  * @author Tom
  */
-public class ProgramStart extends MyRectangle implements Serializable {
+public class ProgramStart extends _Rectangle implements Serializable {
     
     static final long serialVersionUID = 42L;
-    QuestInput target;
+    _Rectangle target;
 
-    public ProgramStart(QuestInput target, int size, Color color) {
-        super(size, color);
-        this.target = target;
+    public ProgramStart(int posX, int posY, int width, int height, Color c) {
+        super(posX, posY, width, height, c);
     }
 
-    public QuestInput getTarget() {
+
+    public _Rectangle getTarget() {
         return target;
     }
     

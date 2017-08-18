@@ -14,9 +14,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import jdk.nashorn.internal.parser.TokenType;
 import questmaker.DoubleBuffer;
-import questmaker.MyRectangle;
 import questmaker.QuestMainFrame;
 import questmaker.SaveFile;
+import questmaker._Rectangle;
 
 /**
  *
@@ -25,9 +25,9 @@ import questmaker.SaveFile;
 public class MainMenuCanvas extends DoubleBuffer implements MouseListener {
 
     MainMenuFrame owner;
-    MyRectangle loadGameFile;
-    MyRectangle launchEditor;
-    MyRectangle exitProgram;
+    _Rectangle loadGameFile;
+    _Rectangle launchEditor;
+    _Rectangle exitProgram;
 
     String loadString = "Load game file";
     String launchEditorString = "Launch Editor";
@@ -38,50 +38,9 @@ public class MainMenuCanvas extends DoubleBuffer implements MouseListener {
         this.owner = owner;
         this.addMouseListener(this);
 
-        this.loadGameFile = new MyRectangle(loadString.length() * 20, Color.GREEN) {
-            @Override
-            public void draw(Graphics g) {
-                g.setColor(this.getColor());
-                g.drawRect(this.getPosX(), this.getPosY(), this.getSize(), 60);
-            }
-
-            @Override
-            public boolean MouseOverlaps(Point mousePosition) {
-                return mousePosition.x > this.getPosX() && mousePosition.x < this.getPosX() + this.getSize()
-                        && mousePosition.y > this.getPosY() && mousePosition.y < this.getPosY() + 60;
-            }
-
-        };
-
-        this.launchEditor = new MyRectangle(loadString.length() * 20, Color.GREEN) {
-            @Override
-            public void draw(Graphics g) {
-                g.setColor(this.getColor());
-                g.drawRect(this.getPosX(), this.getPosY(), this.getSize(), 60);
-            }
-
-            @Override
-            public boolean MouseOverlaps(Point mousePosition) {
-                return mousePosition.x > this.getPosX() && mousePosition.x < this.getPosX() + this.getSize()
-                        && mousePosition.y > this.getPosY() && mousePosition.y < this.getPosY() + 60;
-            }
-
-        };
-
-        this.exitProgram = new MyRectangle(loadString.length() * 20, Color.GREEN) {
-            @Override
-            public void draw(Graphics g) {
-                g.setColor(this.getColor());
-                g.drawRect(this.getPosX(), this.getPosY(), this.getSize(), 60);
-            }
-
-            @Override
-            public boolean MouseOverlaps(Point mousePosition) {
-                return mousePosition.x > this.getPosX() && mousePosition.x < this.getPosX() + this.getSize()
-                        && mousePosition.y > this.getPosY() && mousePosition.y < this.getPosY() + 60;
-            }
-
-        };
+        this.exitProgram = new _Rectangle(0, 0, loadString.length() * 20, 60, Color.GREEN);
+        this.launchEditor = new _Rectangle(0, 0, loadString.length() * 20, 60, Color.GREEN);
+        this.loadGameFile = new _Rectangle(0, 0, loadString.length() * 20, 60, Color.GREEN);
 
     }
 
@@ -121,7 +80,7 @@ public class MainMenuCanvas extends DoubleBuffer implements MouseListener {
     @Override
     public void mousePressed(MouseEvent e) {
 
-        if (loadGameFile.MouseOverlaps(e.getPoint())) {
+        if (loadGameFile.isMouseOver(e.getPoint())) {
             FileDialog FD = new FileDialog(owner, "Load",FileDialog.LOAD);
             FD.setVisible(true);
 
@@ -147,10 +106,10 @@ public class MainMenuCanvas extends DoubleBuffer implements MouseListener {
                     System.out.println(ex);
                 } 
             } 
-        } else if (launchEditor.MouseOverlaps(e.getPoint())) {
+        } else if (launchEditor.isMouseOver(e.getPoint())) {
             QuestMainFrame QMF = new QuestMainFrame();
             owner.dispose();
-        } else if (exitProgram.MouseOverlaps(e.getPoint())) {
+        } else if (exitProgram.isMouseOver(e.getPoint())) {
             System.exit(0);
         }
 

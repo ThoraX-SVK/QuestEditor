@@ -9,8 +9,8 @@ public class Quest implements Serializable {
     static final long serialVersionUID = 42L;
     static int inputId = 0;
     static int outputId = 0;
-    LinkedList<QuestInput> inputs;
-    LinkedList<QuestOutput> outputs;
+    LinkedList<_QuestInput> inputs;
+    LinkedList<_QuestOutput> outputs;
     LinkedList<Decision> decisions;
     QuestBubble questBubble;
 
@@ -22,13 +22,13 @@ public class Quest implements Serializable {
     }
 
     public void addInput() {
-        inputs.add(new QuestInput(this, 10, Color.RED));
-        inputs.getLast().upadatePosition();     
+        inputs.add(new _QuestInput(this, 0, 0, 10, 10, Color.RED));
+        inputs.getLast().updatePosition();
     }
 
     public void addOutput() {
-       outputs.add(new QuestOutput(this, 10, Color.BLUE));
-       outputs.getLast().upadatePosition();
+       outputs.add(new _QuestOutput(this,0,0,10, 10, Color.BLUE));
+       outputs.getLast().updatePosition();
     }
 
     public void delete() {
