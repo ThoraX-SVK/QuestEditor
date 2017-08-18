@@ -10,9 +10,9 @@ import java.io.Serializable;
 public abstract class _FunctionIO extends _OuterLayerIO  implements Serializable {
 
     
-    FunctionBlockRandom owner;
+    FunctionBlock owner;
 
-    public _FunctionIO(FunctionBlockRandom owner, int posX, int posY, int width, int height, Color c) {
+    public _FunctionIO(FunctionBlock owner, int posX, int posY, int width, int height, Color c) {
         super(posX, posY, width, height, c);
         this.owner = owner;
     }

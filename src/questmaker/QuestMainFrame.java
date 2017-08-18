@@ -49,7 +49,7 @@ public class QuestMainFrame extends Frame implements ActionListener {
         addQuestButton = new Button("Pridaj Quest");
         addQuestButton.addActionListener(this);
         P.add(addQuestButton);
-        addRandomBlock = new Button("Pridaj RAND blok");
+        addRandomBlock = new Button("Pridaj funkčný blok");
         addRandomBlock.addActionListener(this);
         P.add(addRandomBlock);
         P.add(Box.createRigidArea(new Dimension(350, 0)));
@@ -78,10 +78,11 @@ public class QuestMainFrame extends Frame implements ActionListener {
             tempQuestBubble = null;
             qmfc.repaint();
         } else if (e.getSource() == addRandomBlock) {
-            FunctionBlockRandom fbr = new FunctionBlockRandom(300, 300, 0, 20, Color.GRAY);
-            fbr.setWidth(fbr.functionName.length() * 14);
-            qmfc.blockToDraw.add(fbr);
-            qmfc.repaint();
+            
+
+              ChooseFunctionBlockDialog fuChose = new ChooseFunctionBlockDialog(this);
+              
+
         }
         else if (e.getSource() == Save) {
             FileDialog FD = new FileDialog(this, "Save as",FileDialog.SAVE);

@@ -12,7 +12,7 @@ public class _FunctionOutput extends _FunctionIO implements Serializable {
     _Rectangle target;
     double probability;
 
-    public _FunctionOutput(FunctionBlockRandom owner, int posX, int posY, int width, int height, Color c) {
+    public _FunctionOutput(FunctionBlock owner, int posX, int posY, int width, int height, Color c) {
         super(owner, posX, posY, width, height, c);
         this.probability = 0;
     }

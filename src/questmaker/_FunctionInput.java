@@ -9,11 +9,11 @@ import java.io.Serializable;
  */
 public class _FunctionInput extends _FunctionIO implements Serializable {
     
-    public _FunctionInput(FunctionBlockRandom owner, int posX, int posY, int width, int height, Color c) {
+    public _FunctionInput(FunctionBlock owner, int posX, int posY, int width, int height, Color c) {
         super(owner, posX, posY, width, height, c);
     }
 
-    public FunctionBlockRandom getOwner() {
+    public FunctionBlock getOwner() {
         return owner;
     }
 

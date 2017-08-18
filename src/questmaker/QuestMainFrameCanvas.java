@@ -30,7 +30,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
     _FunctionInput _chosenFunctionInput;
     
     QuestBubble _chosenQuestBubble;
-    FunctionBlockRandom _chosenFunctionBlock;
+    FunctionBlock _chosenFunctionBlock;
     
     boolean mouseButtonHoldOnQuestBuble;
     boolean mouseButtonHoldOnQuestOutput;
@@ -70,9 +70,9 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
         }
 
         for (_Rectangle r : blockToDraw) {
-            if (r instanceof FunctionBlockRandom) {
-                FunctionBlockRandom fbl = (FunctionBlockRandom) r;
-                fbl.draw(g);
+            if (r instanceof FunctionBlock) {
+                FunctionBlock fb = (FunctionBlock) r;
+                fb.draw(g);
             } else if (r instanceof QuestBubble) {
                 QuestBubble qb = (QuestBubble) r;
                 qb.draw(g);
@@ -107,9 +107,9 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                         drawLine(qo.getTarget(), qo, g);
                     }
                 }
-            } else if (r instanceof FunctionBlockRandom) {
-                FunctionBlockRandom fbr = (FunctionBlockRandom) r;
-                for (_FunctionOutput fo : fbr.outputs) {
+            } else if (r instanceof FunctionBlock) {
+                FunctionBlock fb = (FunctionBlock) r;
+                for (_FunctionOutput fo : fb.outputs) {
                     if (fo.target != null)
                         drawLine(fo, fo.target, g);
                 }
@@ -132,8 +132,8 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                 showDeleteZone = true;
                 this.repaint();
                 return;
-            } else if (_chosenBlock instanceof FunctionBlockRandom) {
-                _chosenFunctionBlock = (FunctionBlockRandom) _chosenBlock;
+            } else if (_chosenBlock instanceof FunctionBlock) {
+                _chosenFunctionBlock = (FunctionBlock) _chosenBlock;
                 _chosenFunctionBlock.color = Color.RED;
                 mouseButtonHoldOnFunction = true;
                 showDeleteZone = true;
@@ -226,7 +226,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                 this.repaint();
                 return; 
             } else if (_chosenInputRectangle instanceof _FunctionInput) {
-                _chosenFunctionOutput = (_FunctionOutput) _chosenInputRectangle;
+                _chosenFunctionInput = (_FunctionInput) _chosenInputRectangle;
                 
                 //TODO
                 
@@ -392,8 +392,8 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                         return qo;
                     }
                 }
-            } else if (r instanceof FunctionBlockRandom) {
-                FunctionBlockRandom fbr = (FunctionBlockRandom) r;
+            } else if (r instanceof FunctionBlock) {
+                FunctionBlock fbr = (FunctionBlock) r;
                 for (_FunctionOutput fo : fbr.outputs) {
                     if (fo.isMouseOver(mouseCursor)) {
                         return fo;
@@ -419,10 +419,12 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                         return qi;
                     }
                 }
-            } else if (r instanceof FunctionBlockRandom) {
-                FunctionBlockRandom fbr = (FunctionBlockRandom) r;
-                if (fbr.input.isMouseOver(mouseCursor)) {
-                    return fbr.input;
+            } else if (r instanceof FunctionBlock) {
+                FunctionBlock fbr = (FunctionBlock) r;
+                for (_FunctionInput fi : fbr.inputs) {
+                    if (fi.isMouseOver(mouseCursor)) {
+                        return fi;
+                    }
                 }
             }
         }

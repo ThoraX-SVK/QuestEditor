@@ -16,11 +16,11 @@ import java.awt.event.WindowEvent;
  */
 public class EditFunctionDialog extends Dialog implements ActionListener {
     
-    FunctionBlockRandom fbl;
+    FunctionBlock fbl;
     EditFunctionDialogCanvas canvas;
     Button addOutput;
 
-    public EditFunctionDialog(QuestMainFrame owner, FunctionBlockRandom fbl) {
+    public EditFunctionDialog(QuestMainFrame owner, FunctionBlock fbl) {
         super(owner);
         this.setModal(true);
         this.setSize(800, 600);
@@ -54,7 +54,7 @@ public class EditFunctionDialog extends Dialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         
         if (e.getSource() == addOutput) {
-            fbl.addOuput();
+            fbl.addOutput();
             fbl.outputs.getLast().updatePosition();
             canvas.repaint();
         }
