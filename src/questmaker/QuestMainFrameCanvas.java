@@ -18,20 +18,20 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
 
     _Rectangle lastMouseOver;
     Point tempLineEnd;
-    
+
     _Rectangle _chosenOutputRectangle;
     _Rectangle _chosenInputRectangle;
     _Rectangle _chosenBlock;
-    
+
     _QuestOutput _chosenQuestOutput;
     _FunctionOutput _chosenFunctionOutput;
-    
+
     _QuestInput _chosenQuestInput;
     _FunctionInput _chosenFunctionInput;
-    
+
     QuestBubble _chosenQuestBubble;
     FunctionBlock _chosenFunctionBlock;
-    
+
     boolean mouseButtonHoldOnQuestBuble;
     boolean mouseButtonHoldOnQuestOutput;
     boolean mouseButtonHoldOnProgramStart;
@@ -110,8 +110,9 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
             } else if (r instanceof FunctionBlock) {
                 FunctionBlock fb = (FunctionBlock) r;
                 for (_FunctionOutput fo : fb.outputs) {
-                    if (fo.target != null)
+                    if (fo.target != null) {
                         drawLine(fo, fo.target, g);
+                    }
                 }
             }
 
@@ -122,9 +123,9 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            
+
             _chosenBlock = selectBlockOnMouseOver(e.getPoint());
-            
+
             if (_chosenBlock instanceof QuestBubble) {
                 _chosenQuestBubble = (QuestBubble) _chosenBlock;
                 _chosenQuestBubble.color = Color.RED;
@@ -137,15 +138,16 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                 _chosenFunctionBlock.color = Color.RED;
                 mouseButtonHoldOnFunction = true;
                 showDeleteZone = true;
-                this.repaint(); 
+                this.repaint();
                 return;
             }
-            
+
             _chosenOutputRectangle = selectOutput(e.getPoint());
-            
+
             if (_chosenOutputRectangle instanceof _QuestOutput) {
                 _chosenQuestOutput = (_QuestOutput) _chosenOutputRectangle;
-                if (_chosenQuestOutput.target == null) { /* ak true, tak z neho nejde čiara */
+                if (_chosenQuestOutput.target == null) {
+                    /* ak true, tak z neho nejde čiara */
                     _chosenQuestOutput.color = Color.WHITE;
                     mouseButtonHoldOnQuestOutput = true;
                     this.repaint();
@@ -153,21 +155,23 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                 }
             } else if (_chosenOutputRectangle instanceof _FunctionOutput) {
                 _chosenFunctionOutput = (_FunctionOutput) _chosenOutputRectangle;
-                if (_chosenFunctionOutput.target == null) {  /* ak true, tak z neho nejde čiara */
+                if (_chosenFunctionOutput.target == null) {
+                    /* ak true, tak z neho nejde čiara */
                     _chosenFunctionOutput.color = Color.WHITE;
                     mouseHoldOnFunctionOutput = true;
                     this.repaint();
                     return;
                 }
             }
-            
-            if (programStart.isMouseOver(e.getPoint()))
+
+            if (programStart.isMouseOver(e.getPoint())) {
                 mouseButtonHoldOnProgramStart = true;
-  
+            }
+
         } else if (e.getButton() == MouseEvent.BUTTON3) {
-            
+
             _chosenBlock = selectBlockOnMouseOver(e.getPoint());
-            
+
             if (_chosenBlock instanceof QuestBubble) {
                 _chosenQuestBubble = (QuestBubble) _chosenBlock;
                 EditQuestDialog eqd = new EditQuestDialog(owner, _chosenQuestBubble.quest);
@@ -179,72 +183,52 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                 this.repaint();
                 return;
             }
-            
+
             _chosenOutputRectangle = selectOutput(e.getPoint());
-            
+
             if (_chosenOutputRectangle instanceof _QuestOutput) {
                 _chosenQuestOutput = (_QuestOutput) _chosenOutputRectangle;
-                
+
                 if (_chosenQuestOutput.target != null) {
                     _chosenQuestOutput.target = null;
                     this.repaint();
                     return;
                 }
-                
+
             } else if (_chosenOutputRectangle instanceof _FunctionOutput) {
                 _chosenFunctionOutput = (_FunctionOutput) _chosenOutputRectangle;
-                
+
                 if (_chosenFunctionOutput.target != null) {
                     _chosenFunctionOutput.target = null;
                     this.repaint();
                     return;
                 }
             }
-            
+
             _chosenInputRectangle = selectInput(e.getPoint());
-            
+
             if (_chosenInputRectangle instanceof _QuestInput) {
+
                 _chosenQuestInput = (_QuestInput) _chosenInputRectangle;
-                
-                for (_Rectangle r : blockToDraw) {
-                    if (r instanceof QuestBubble) {
-                        QuestBubble tmp = (QuestBubble) r;
-                        for (_QuestOutput qo : tmp.quest.outputs) {
-                            if (qo.target == _chosenQuestInput) {
-                                qo.target = null;
-                            }
-                        }
-                    } else if (r instanceof FunctionBlockRandom) {
-                        FunctionBlockRandom fbr = (FunctionBlockRandom) r;
-                        for (_FunctionOutput fo : fbr.outputs) {
-                            if (fo.target == _chosenQuestInput) {
-                                fo.target = null;
-                            }
-                        }
-                    }
-                }
+                clearInpupIngoingLines(_chosenQuestInput);
                 this.repaint();
-                return; 
             } else if (_chosenInputRectangle instanceof _FunctionInput) {
+
                 _chosenFunctionInput = (_FunctionInput) _chosenInputRectangle;
-                
-                //TODO
-                
-                
-            }     
+                clearInpupIngoingLines(_chosenFunctionInput);
+            }
         }
-        
     }
-    
+
     @Override
     public void mouseDragged(MouseEvent e) {
         if (mouseButtonHoldOnQuestBuble) {
             _chosenQuestBubble.posX = e.getX() - _chosenQuestBubble.width / 2;
             _chosenQuestBubble.posY = e.getY() - _chosenQuestBubble.height / 2;
-            
+
             _chosenQuestBubble.update();
             this.repaint();
-            
+
         } else if (mouseButtonHoldOnFunction) {
             _chosenFunctionBlock.posX = e.getX() - _chosenFunctionBlock.width / 2;
             _chosenFunctionBlock.posY = e.getY() - _chosenFunctionBlock.height / 2;
@@ -266,53 +250,39 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
             if (e.getX() > this.getWidth() - 160 && e.getX() < this.getWidth() - 40
                     && e.getY() > this.getHeight() - 40 && e.getY() < this.getHeight() - 10) {
 
-                for (_QuestInput qi : _chosenQuestBubble.quest.inputs) {
-                    for (_Rectangle r : blockToDraw) {
-                        if (r instanceof QuestBubble) {
-                            QuestBubble tmp = (QuestBubble) r;
-                            for (_QuestOutput qo : tmp.quest.outputs) {
-                                if (qo.target == qi) {
-                                    qo.target = null;
-                                }
-                            }
-                        } else if (r instanceof FunctionBlockRandom) {
-                            FunctionBlockRandom fbr = (FunctionBlockRandom) r;
-                            for (_FunctionOutput fo : fbr.outputs) {
-                                if (fo.target == qi) {
-                                    fo.target = null;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                for (_QuestOutput qo : _chosenQuestBubble.quest.outputs) {
-                    qo.target = null;
-                }
-
-                _chosenQuestBubble.delete();
-                blockToDraw.remove(_chosenQuestBubble);
-            } else { /* Nie je to v delete bloku */
+                deleteQuestBubble(_chosenQuestBubble);
+                
+            } else {
+                /* Nie je to v delete bloku */
                 _chosenQuestBubble.color = Color.BLUE;
             }
             this.repaint();
-            
-        } else if (mouseButtonHoldOnFunction) {
-            _chosenFunctionBlock.color = Color.GRAY;
 
+        } else if (mouseButtonHoldOnFunction) {
+            
+            if (e.getX() > this.getWidth() - 160 && e.getX() < this.getWidth() - 40
+                    && e.getY() > this.getHeight() - 40 && e.getY() < this.getHeight() - 10) {
+                deleteFunctionBlock(_chosenFunctionBlock);
+            } else {
+                _chosenFunctionBlock.color = Color.GRAY;
+            }
+            this.repaint();
+            
         } else if (mouseButtonHoldOnQuestOutput) {
-            _chosenQuestOutput.color = Color.BLUE;   
+            _chosenQuestOutput.color = Color.BLUE;
             _chosenQuestOutput.target = selectInput(e.getPoint());
             this.repaint();
-            
+
         } else if (mouseHoldOnFunctionOutput) {
             _chosenFunctionOutput.color = Color.BLUE;
-            _chosenFunctionOutput.target = selectInput(e.getPoint());  
+            _chosenFunctionOutput.target = selectInput(e.getPoint());
             this.repaint();
-            
+
         } else if (mouseButtonHoldOnProgramStart) {
-            programStart.target = selectInput(e.getPoint());  
-            
+            _Rectangle tmp = selectInput(e.getPoint());
+            if (tmp != null) {
+                programStart.target = tmp;
+            }
         }
 
         tempLineEnd = null;
@@ -333,8 +303,6 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
         _chosenQuestOutput = null;
         this.repaint();
     }
-
-    
 
     @Override
     public void mouseMoved(MouseEvent e) {
@@ -428,7 +396,7 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
                 }
             }
         }
-        
+
         return null;
     }
 
@@ -456,18 +424,123 @@ public class QuestMainFrameCanvas extends DoubleBuffer implements MouseListener,
         g.drawString("Delete", this.getWidth() - 140, this.getHeight() - 18);
     }
 
+    private void clearBlockIngoingLines(_Rectangle rec) {
+
+        if (rec instanceof QuestBubble) {
+            QuestBubble qb = (QuestBubble) rec;
+
+            for (_QuestInput qi : qb.quest.inputs) {
+                clearInpupIngoingLines(qi);
+            }
+        } else if (rec instanceof FunctionBlock) {
+            FunctionBlock fb = (FunctionBlock) rec;
+
+            for (_FunctionInput fi : fb.inputs) {
+                clearInpupIngoingLines(fi);
+            }
+        }
+    }
+
+    private void clearInpupIngoingLines(_Rectangle rec) {
+
+        if (rec instanceof _QuestInput) {
+            _QuestInput qi = (_QuestInput) rec;
+
+            for (_Rectangle r : blockToDraw) {
+                if (r instanceof QuestBubble) {
+                    QuestBubble tmp = (QuestBubble) r;
+                    for (_QuestOutput qo : tmp.quest.outputs) {
+                        if (qo.target == qi) {
+                            qo.target = null;
+                        }
+                    }
+                } else if (r instanceof FunctionBlock) {
+                    FunctionBlock fb = (FunctionBlock) r;
+                    for (_FunctionOutput fo : fb.outputs) {
+                        if (fo.target == qi) {
+                            fo.target = null;
+                        }
+                    }
+                }
+            }
+        } else if (rec instanceof _FunctionInput) {
+            _FunctionInput fi = (_FunctionInput) rec;
+
+            for (_Rectangle r : blockToDraw) {
+                if (r instanceof QuestBubble) {
+                    QuestBubble tmp = (QuestBubble) r;
+                    for (_QuestOutput qo : tmp.quest.outputs) {
+                        if (qo.target == fi) {
+                            qo.target = null;
+                        }
+                    }
+                } else if (r instanceof FunctionBlock) {
+                    FunctionBlock fb = (FunctionBlock) r;
+                    for (_FunctionOutput fo : fb.outputs) {
+                        if (fo.target == fi) {
+                            fo.target = null;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void clearBlockOutgoingLines(_Rectangle rec) {
+
+        if (rec instanceof QuestBubble) {
+            QuestBubble qb = (QuestBubble) rec;
+
+            for (_QuestOutput qo : qb.quest.outputs) {
+                clearOutputOutgoingLine(qo);
+            }
+
+        } else if (rec instanceof FunctionBlock) {
+            FunctionBlock fb = (FunctionBlock) rec;
+
+            for (_FunctionOutput fo : fb.outputs) {
+                clearOutputOutgoingLine(fo);
+            }
+        }
+    }
+
+    private void clearOutputOutgoingLine(_Rectangle rec) {
+
+        if (rec instanceof _QuestOutput) {
+            _QuestOutput qo = (_QuestOutput) rec;
+            qo.target = null;
+        } else if (rec instanceof _FunctionOutput) {
+            _FunctionOutput fo = (_FunctionOutput) rec;
+            fo.target = null;
+        }
+
+    }
+
+    private void deleteQuestBubble(QuestBubble qb) {
+        clearBlockIngoingLines(qb);
+        clearBlockOutgoingLines(qb);
+        qb.delete();
+        this.blockToDraw.remove(qb);
+    }
+
+    private void deleteFunctionBlock(FunctionBlock fb) {
+        clearBlockIngoingLines(fb);
+        clearBlockOutgoingLines(fb);
+        this.blockToDraw.remove(fb);
+    }
+
     @Override
-        public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-        public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-        public void mouseExited(MouseEvent e) {
+    public void mouseExited(MouseEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
