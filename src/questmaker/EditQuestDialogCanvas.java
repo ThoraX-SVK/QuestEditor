@@ -7,11 +7,13 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import jdk.nashorn.internal.parser.TokenType;
 
 public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener, MouseMotionListener {
 
     Quest quest;
     Decision tempDecision;
+    FunctionBlock tempFunctionBlock;
     Point tempLineEnd;
     _AnswerOuput tempAnswerOutput;
     _QuestInput tempQuestInput;
@@ -20,11 +22,16 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
     _Rectangle chosenOutput;
     _Rectangle chosenBlock;
 
+    _FunctionInput tempFunctionInput;
+    _FunctionOutput tempFunctionOutput;
+
     _Rectangle lastRectangleMouseOver;
 
     boolean mouseHoldDecisionSelected;
     boolean mouseHoldAnswerOutputSelected;
     boolean mouseHoldOnQuestInputSelected;
+    boolean mouseHoldFunctionBlock;
+    boolean mouseHoldOnFunctionOutput;
     boolean drawDeleteZone;
 
     public EditQuestDialogCanvas(Quest quest) {
@@ -32,6 +39,8 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         this.mouseHoldDecisionSelected = false;
         this.mouseHoldAnswerOutputSelected = false;
         this.drawDeleteZone = false;
+        this.mouseHoldFunctionBlock = false;
+        this.mouseHoldOnFunctionOutput = false;
 
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -54,6 +63,9 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             } else if (tempQuestInput != null) {
                 g.drawLine(15, quest.inputs.indexOf(tempQuestInput) * 33 + 16,
                         tempLineEnd.x, tempLineEnd.y);
+            } else if (tempFunctionOutput != null) {
+                g.drawLine(tempFunctionOutput.posX + 5, tempFunctionOutput.posY + 5,
+                        tempLineEnd.x, tempLineEnd.y);
             }
         }
 
@@ -63,10 +75,20 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             }
         }
 
-        for (Decision de : quest.decisions) {
-            for (Answer an : de.answers) {
-                if (an.output != null) {
-                    drawLine(an.output, an.output.target, g);
+        for (_Rectangle r : quest.blocksToDraw) {
+            if (r instanceof Decision) {
+                Decision de = (Decision) r;
+                for (Answer an : de.answers) {
+                    if (an.output.target != null) {
+                        drawLine(an.output, an.output.target, g);
+                    }
+                }
+            } else if (r instanceof FunctionBlock) {
+                FunctionBlock fb = (FunctionBlock) r;
+                for (_FunctionOutput fo : fb.outputs) {
+                    if (fo.target != null) {
+                        drawLine(fo, fo.target, g);
+                    }
                 }
             }
         }
@@ -83,9 +105,15 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             qo.drawInner(g);
         }
 
-        if (!quest.decisions.isEmpty()) {
-            for (Decision de : quest.decisions) {
-                de.draw(g);
+        if (!quest.blocksToDraw.isEmpty()) {
+            for (_Rectangle r : quest.blocksToDraw) {
+                if (r instanceof Decision) {
+                    Decision de = (Decision) r;
+                    de.draw(g);
+                } else if (r instanceof FunctionBlock) {
+                    FunctionBlock fb = (FunctionBlock) r;
+                    fb.draw(g);
+                }
             }
         }
 
@@ -110,6 +138,13 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                 tempDecision.color = Color.RED;
                 this.repaint();
                 return;
+            } else if (chosenBlock instanceof FunctionBlock) {
+                tempFunctionBlock = (FunctionBlock) chosenBlock;
+                drawDeleteZone = true;
+                tempFunctionBlock.color = Color.RED;
+                mouseHoldFunctionBlock = true;
+                this.repaint();
+                return;
             }
 
             chosenOutput = selectOutput(e.getPoint());
@@ -131,6 +166,17 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                     /* Nejde z neho čiara */
                     mouseHoldOnQuestInputSelected = true;
                     tempQuestInput.color = Color.WHITE;
+                    this.repaint();
+                    return;
+                }
+            } else if (chosenOutput instanceof _FunctionOutput) {
+
+                tempFunctionOutput = (_FunctionOutput) chosenOutput;
+
+                if (tempFunctionOutput.target == null) {
+                    /* Nejde z neho čiara */
+                    mouseHoldOnFunctionOutput = true;
+                    tempFunctionOutput.color = Color.WHITE;
                     this.repaint();
                     return;
                 }
@@ -159,6 +205,11 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                 an.popis = rtg.textArea.getText();
                 this.repaint();
                 return;
+            } else if (chosenBlock instanceof FunctionBlockRandom) {
+                FunctionBlockRandom fbr = (FunctionBlockRandom) chosenBlock;
+                EditFunctionDialog efd = new EditFunctionDialog(null, fbr);
+                this.repaint();
+                return;
             }
 
             chosenInput = selectInput(e.getPoint());
@@ -172,6 +223,11 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                 _DecisionInput din = (_DecisionInput) chosenInput;
                 clearIngoingLines(din);
                 this.repaint();
+            } else if (chosenInput instanceof _FunctionInput) {
+                
+                _FunctionInput fi = (_FunctionInput) chosenInput;
+                clearIngoingLines(fi);
+                this.repaint();
             }
 
             chosenOutput = selectOutput(e.getPoint());
@@ -184,6 +240,11 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
 
                 _QuestInput qi = (_QuestInput) chosenOutput;
                 clearOutgoingLine(qi);
+                this.repaint();
+            } else if (chosenOutput instanceof _FunctionOutput) {
+                
+                _FunctionOutput fo = (_FunctionOutput) chosenOutput;
+                clearOutgoingLine(fo);
                 this.repaint();
             }
 
@@ -199,6 +260,15 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
 
             if (target != null) {
                 tempAnswerOutput.target = target;
+            }
+
+        } else if (mouseHoldOnFunctionOutput) {
+
+            tempFunctionOutput.color = Color.BLUE;
+            _Rectangle target = selectInput(e.getPoint());
+
+            if (target != null) {
+                tempFunctionOutput.target = target;
             }
 
         } else if (mouseHoldOnQuestInputSelected) {
@@ -221,14 +291,32 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
 
             }
 
+        } else if (mouseHoldFunctionBlock) {
+
+            //DELETE ZONA
+            if (e.getX() > this.getWidth() - 160 && e.getX() < this.getWidth() - 40
+                    && e.getY() > this.getHeight() - 40 && e.getY() < this.getHeight() - 10) {
+
+                deleteBlock(tempFunctionBlock);
+
+            } else { //ak nie je v DELETE zone
+
+            }
+
         }
 
         drawDeleteZone = false;
         tempLineEnd = null;
         tempAnswerOutput = null;
+        tempFunctionBlock = null;
+        tempFunctionInput = null;
+        tempFunctionOutput = null;
+        tempQuestInput = null;
         mouseHoldAnswerOutputSelected = false;
         mouseHoldDecisionSelected = false;
         mouseHoldOnQuestInputSelected = false;
+        mouseHoldOnFunctionOutput = false;
+        this.mouseHoldFunctionBlock = false;
         this.repaint();
 
     }
@@ -248,7 +336,15 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         if (mouseHoldDecisionSelected) {
             tempDecision.updatePosition(e.getPoint());
             this.repaint();
-        } else if (mouseHoldAnswerOutputSelected || mouseHoldOnQuestInputSelected) {
+        } else if (mouseHoldFunctionBlock) {
+            tempFunctionBlock.posX = e.getX() - tempFunctionBlock.width / 2;
+            tempFunctionBlock.posY = e.getY() - tempFunctionBlock.height / 2;
+
+            tempFunctionBlock.update();
+            this.repaint();
+
+        } else if (mouseHoldAnswerOutputSelected || mouseHoldOnQuestInputSelected
+                || mouseHoldOnFunctionOutput) {
             tempLineEnd = e.getPoint();
             this.repaint();
         }
@@ -265,6 +361,8 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                     lastRectangleMouseOver.color = Color.CYAN;
                 } else if (lastRectangleMouseOver instanceof Answer) {
                     lastRectangleMouseOver.color = Color.YELLOW;
+                } else if (lastRectangleMouseOver instanceof FunctionBlock) {
+                    lastRectangleMouseOver.color = Color.GRAY;
                 }
             }
             lastRectangleMouseOver = mouseOn;
@@ -278,6 +376,8 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                 lastRectangleMouseOver.color = Color.CYAN;
             } else if (lastRectangleMouseOver instanceof Answer) {
                 lastRectangleMouseOver.color = Color.YELLOW;
+            } else if (lastRectangleMouseOver instanceof FunctionBlock) {
+                lastRectangleMouseOver.color = Color.GRAY;
             }
 
             lastRectangleMouseOver = null;
@@ -293,29 +393,29 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
 
     private void drawLine(_Rectangle square1, _Rectangle square2, Graphics g) {
         g.setColor(Color.WHITE);
-        if (square1 instanceof _QuestInput && square2 instanceof _DecisionInput) {
-            _QuestInput qi = (_QuestInput) square1;
-            _DecisionInput di = (_DecisionInput) square2;
-
-            g.drawLine(qi.innerPosX + 15, qi.innerPosY + 15, di.posX + 5, di.posY + 5);
-        } else if (square1 instanceof _QuestInput && square2 instanceof _QuestOutput) {
-            _QuestInput qi = (_QuestInput) square1;
-            _QuestOutput qo = (_QuestOutput) square2;
-
-            g.drawLine(qi.innerPosX + 15, qi.innerPosY + 15, qo.innerPosX + 15, qo.innerPosY + 15);
-        } else if (square1 instanceof _AnswerOuput && square2 instanceof _DecisionInput) {
-            _AnswerOuput ao = (_AnswerOuput) square1;
-            _DecisionInput di = (_DecisionInput) square2;
-
-            g.drawLine(ao.posX + 5, ao.posY + 5, di.posX + 5, di.posY + 5);
-        } else if (square1 instanceof _AnswerOuput && square2 instanceof _QuestOutput) {
-            _AnswerOuput ao = (_AnswerOuput) square1;
-            _QuestOutput qo = (_QuestOutput) square2;
-
-            g.drawLine(ao.posX + 5, ao.posY + 5, qo.innerPosX + 15, qo.innerPosY + 15);
+        _QuestInput qi = null;
+        _QuestOutput qo = null;
+        
+        if (square1 instanceof _QuestInput) {
+            qi = (_QuestInput) square1;
         }
+        
+        if (square2 instanceof  _QuestOutput) {
+            qo = (_QuestOutput) square2;
+        }
+        
+        if (qi == null && qo == null) {
+            g.drawLine(square1.posX + 5, square1.posY + 5, square2.posX + 5, square2.posY + 5);
+        } else if (qi != null && qo == null) {
+            g.drawLine(qi.innerPosX + 15, qi.innerPosY + 15, square2.posX + 5, square2.posY + 5);
+        } else if (qi == null && qo != null) {
+            g.drawLine(square1.posX + 5, square1.posY + 5, qo.innerPosX + 15, qo.innerPosY + 15);
+        } else if (qi != null && qo != null) {
+            g.drawLine(qi.innerPosX + 15, qi.innerPosY + 15, qo.innerPosX + 15, qo.innerPosY + 15);
+        }
+        
     }
-
+    
     private _Rectangle selectOutput(Point mouseCursor) {
 
         for (_QuestInput qi : quest.inputs) {
@@ -324,10 +424,20 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             }
         }
 
-        for (Decision de : quest.decisions) {
-            for (Answer an : de.answers) {
-                if (an.output.isMouseOver(mouseCursor)) {
-                    return an.output;
+        for (_Rectangle r : quest.blocksToDraw) {
+            if (r instanceof Decision) {
+                Decision de = (Decision) r;
+                for (Answer an : de.answers) {
+                    if (an.output.isMouseOver(mouseCursor)) {
+                        return an.output;
+                    }
+                }
+            } else if (r instanceof FunctionBlock) {
+                FunctionBlock fb = (FunctionBlock) r;
+                for (_FunctionOutput fo : fb.outputs) {
+                    if (fo.isMouseOver(mouseCursor)) {
+                        return fo;
+                    }
                 }
             }
         }
@@ -343,24 +453,18 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             }
         }
 
-        for (Decision de : quest.decisions) {
-            if (de.decisionInput.isMouseOver(mouseCursor)) {
-                return de.decisionInput;
-            }
-        }
+        for (_Rectangle r : quest.blocksToDraw) {
+            if (r instanceof Decision) {
+                Decision de = (Decision) r;
+                if (de.decisionInput.isMouseOver(mouseCursor)) {
+                    return de.decisionInput;
+                }
+            } else if (r instanceof FunctionBlock) {
+                FunctionBlock fb = (FunctionBlock) r;
 
-        return null;
-    }
-
-    private _Rectangle selectBlock(Point mouseCursor) {
-
-        for (Decision de : quest.decisions) {
-            if (de.isMouseOver(mouseCursor)) {
-                return de;
-            } else {
-                for (Answer an : de.answers) {
-                    if (an.isMouseOver(mouseCursor)) {
-                        return an;
+                for (_FunctionInput fi : fb.inputs) {
+                    if (fi.isMouseOver(mouseCursor)) {
+                        return fi;
                     }
                 }
             }
@@ -369,19 +473,45 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         return null;
     }
 
+    private _Rectangle selectBlock(Point mouseCursor) {
+        for (_Rectangle r : quest.blocksToDraw) {
+            if (r instanceof Decision) {
+                Decision de = (Decision) r;
+                if (de.isMouseOver(mouseCursor)) {
+                    return de;
+                } else {
+                    for (Answer an : de.answers) {
+                        if (an.isMouseOver(mouseCursor)) {
+                            return an;
+                        }
+                    }
+                }
+            } else if (r instanceof FunctionBlock) {
+                FunctionBlock fb = (FunctionBlock) r;
+                if (fb.isMouseOver(mouseCursor)) {
+                    return fb;
+                }
+            }
+        }
+
+        return null;
+    }
+
     private DecisionAddNewAnswerSign selectPlusSign(Point mouseCursor) {
-        if (quest.decisions.isEmpty()) {
+        if (quest.blocksToDraw.isEmpty()) {
             return null;
         }
 
-        for (int i = 0; i < quest.decisions.size(); i++) {
-            Decision de = quest.decisions.get(i);
-            if (de.plusSign.MouseOverlaps(mouseCursor)) {
-                return de.plusSign;
+        for (_Rectangle r : quest.blocksToDraw) {
+            if (r instanceof Decision) {
+                Decision de = (Decision) r;
+                if (de.plusSign.MouseOverlaps(mouseCursor)) {
+                    return de.plusSign;
+                }
             }
         }
-        return null;
 
+        return null;
     }
 
     private void clearIngoingLines(_Rectangle rec) {
@@ -395,11 +525,23 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                 }
             }
 
-            for (Decision de : quest.decisions) {
-                for (Answer an : de.answers) {
-                    if (an.output.target == qo) {
-                        an.output.target = null;
+            for (_Rectangle r : quest.blocksToDraw) {
+                if (r instanceof Decision) {
+                    Decision de = (Decision) r;
+                    for (Answer an : de.answers) {
+                        if (an.output.target == qo) {
+                            an.output.target = null;
+                        }
                     }
+                } else if (r instanceof FunctionBlock) {
+                    FunctionBlock fb = (FunctionBlock) r;
+
+                    for (_FunctionOutput fo : fb.outputs) {
+                        if (fo.target == qo) {
+                            fo.target = null;
+                        }
+                    }
+
                 }
             }
 
@@ -412,13 +554,53 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
                 }
             }
 
-            for (Decision de : quest.decisions) {
-                for (Answer an : de.answers) {
-                    if (an.output.target == di) {
-                        an.output.target = null;
+            for (_Rectangle r : quest.blocksToDraw) {
+                if (r instanceof Decision) {
+                    Decision de = (Decision) r;
+                    for (Answer an : de.answers) {
+                        if (an.output.target == di) {
+                            an.output.target = null;
+                        }
                     }
+                } else if (r instanceof FunctionBlock) {
+                    FunctionBlock fb = (FunctionBlock) r;
+
+                    for (_FunctionOutput fo : fb.outputs) {
+                        if (fo.target == di) {
+                            fo.target = null;
+                        }
+                    }
+
                 }
             }
+        }  else if (rec instanceof _FunctionInput) {
+            _FunctionInput fi = (_FunctionInput) rec;
+            
+            for (_QuestInput qi : quest.inputs) {
+                if (qi.target == fi) {
+                    qi.target = null;
+                }
+            }
+
+            for (_Rectangle r : quest.blocksToDraw) {
+                if (r instanceof Decision) {
+                    Decision de = (Decision) r;
+                    for (Answer an : de.answers) {
+                        if (an.output.target == fi) {
+                            an.output.target = null;
+                        }
+                    }
+                } else if (r instanceof FunctionBlock) {
+                    FunctionBlock fb = (FunctionBlock) r;
+
+                    for (_FunctionOutput fo : fb.outputs) {
+                        if (fo.target == fi) {
+                            fo.target = null;
+                        }
+                    }
+
+                }
+            }          
         }
     }
 
@@ -430,6 +612,9 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
         } else if (rec instanceof _AnswerOuput) {
             _AnswerOuput ao = (_AnswerOuput) rec;
             ao.target = null;
+        } else if (rec instanceof _FunctionOutput) {
+            _FunctionOutput fo = (_FunctionOutput) rec;
+            fo.target = null;
         }
 
     }
@@ -440,6 +625,12 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             Decision de = (Decision) rec;
 
             clearIngoingLines(de.decisionInput);
+        } else if (rec instanceof FunctionBlock) {
+            FunctionBlock fb = (FunctionBlock) rec;
+
+            for (_FunctionInput fi : fb.inputs) {
+                clearIngoingLines(fi);
+            }
         }
     }
 
@@ -451,6 +642,13 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
             for (Answer an : de.answers) {
                 clearOutgoingLine(an.output);
             }
+        } else if (rec instanceof FunctionBlock) {
+            FunctionBlock fb = (FunctionBlock) rec;
+
+            for (_FunctionOutput fo : fb.outputs) {
+                clearOutgoingLine(fo);
+            }
+
         }
     }
 
@@ -461,8 +659,14 @@ public class EditQuestDialogCanvas extends DoubleBuffer implements MouseListener
 
             clearBlockIngoingLines(de);
             clearBlockOutgoingLines(de);
-            quest.decisions.remove(de);
+            quest.blocksToDraw.remove(de);
             de.delete();
+        } else if (rec instanceof FunctionBlock) {
+            FunctionBlock fb = (FunctionBlock) rec;
+
+            clearBlockIngoingLines(fb);
+            clearBlockOutgoingLines(fb);
+            quest.blocksToDraw.remove(fb);
         }
     }
 }

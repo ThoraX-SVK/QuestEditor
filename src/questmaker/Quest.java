@@ -11,14 +11,14 @@ public class Quest implements Serializable {
     static int outputId = 0;
     LinkedList<_QuestInput> inputs;
     LinkedList<_QuestOutput> outputs;
-    LinkedList<Decision> decisions;
+    LinkedList<_Rectangle> blocksToDraw;
     QuestBubble questBubble;
 
     public Quest(QuestBubble questBubble) {
         this.questBubble = questBubble;
         inputs = new LinkedList<>();
         outputs = new LinkedList<>();
-        decisions = new LinkedList<>();
+        blocksToDraw = new LinkedList<>();
     }
 
     public void addInput() {
@@ -34,7 +34,7 @@ public class Quest implements Serializable {
     public void delete() {
         inputs.clear();
         outputs.clear();
-        decisions.clear();
+        blocksToDraw.clear();
     }
 
 }

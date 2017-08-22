@@ -12,7 +12,7 @@ import sun.java2d.d3d.D3DRenderQueue;
  * @author Tom
  */
 public class ChooseFunctionBlockDialogCanvas extends DoubleBuffer implements MouseListener {
-    
+
     ChooseFunctionBlockDialog owner;
     FunctionBlockRandom blockRandom;
     FunctionBlockJoiner blockJoin;
@@ -25,10 +25,10 @@ public class ChooseFunctionBlockDialogCanvas extends DoubleBuffer implements Mou
         blockRandom.update();
         blockJoin = new FunctionBlockJoiner(20, 60, 0, 20, Color.GRAY);
         blockJoin.update();
-        
+
         this.addMouseListener(this);
     }
-     
+
     @Override
     public void paintBuffer(Graphics g) {
         g.setFont(new Font("OCR A Extended", 1, 20));
@@ -43,24 +43,42 @@ public class ChooseFunctionBlockDialogCanvas extends DoubleBuffer implements Mou
 
     @Override
     public void mousePressed(MouseEvent e) {
-        
+
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        
-        if (blockJoin.isMouseOver(e.getPoint())) {
-            FunctionBlockJoiner tmp = new FunctionBlockJoiner(300, 300, 0, 20, Color.GRAY);
-            tmp.update();
-            owner.owner.qmfc.blockToDraw.add(tmp);
-            owner.owner.qmfc.repaint();
-        } else if (blockRandom.isMouseOver(e.getPoint())) {
-            FunctionBlockRandom tmp = new FunctionBlockRandom(300, 300, 0, 20, Color.GRAY);
-            owner.owner.qmfc.blockToDraw.add(tmp);
-            owner.owner.qmfc.repaint();
+
+        if (owner.owner != null) {
+            if (blockJoin.isMouseOver(e.getPoint())) {
+                
+                FunctionBlockJoiner tmp = new FunctionBlockJoiner(300, 300, 0, 20, Color.GRAY);
+                tmp.update();
+                owner.owner.qmfc.blockToDraw.add(tmp);
+                owner.owner.qmfc.repaint();
+            } else if (blockRandom.isMouseOver(e.getPoint())) {
+                
+                FunctionBlockRandom tmp = new FunctionBlockRandom(300, 300, 0, 20, Color.GRAY);
+                owner.owner.qmfc.blockToDraw.add(tmp);
+                owner.owner.qmfc.repaint();
+            }
+
+            owner.dispose();
+        } else if (owner.insideQuest != null) {
+            if (blockJoin.isMouseOver(e.getPoint())) {
+                
+                FunctionBlockJoiner tmp = new FunctionBlockJoiner(300, 300, 0, 20, Color.GRAY);
+                tmp.update();
+                owner.insideQuest.quest.blocksToDraw.add(tmp);
+                owner.insideQuest.eqdc.repaint();
+            } else if (blockRandom.isMouseOver(e.getPoint())) {
+                
+                FunctionBlockRandom tmp = new FunctionBlockRandom(300, 300, 0, 20, Color.GRAY);
+                owner.insideQuest.quest.blocksToDraw.add(tmp);
+                owner.insideQuest.eqdc.repaint();
+            }
+            owner.dispose();
         }
-        
-        owner.dispose();   
     }
 
     @Override

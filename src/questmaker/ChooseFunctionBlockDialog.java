@@ -12,12 +12,14 @@ import java.awt.event.WindowEvent;
  */
 public class ChooseFunctionBlockDialog extends Dialog {
     
-    QuestMainFrame owner;
+    QuestMainFrame owner;           // jeden z tychto je vzdy null
+    EditQuestDialog insideQuest; //
     ChooseFunctionBlockDialogCanvas canvas;
     
-    public ChooseFunctionBlockDialog(QuestMainFrame owner) {
+    public ChooseFunctionBlockDialog(QuestMainFrame owner,EditQuestDialog insideQuest) {
         super(owner);
         this.owner = owner;
+        this.insideQuest = insideQuest;
         this.setModal(true);
         this.setSize(300, 300);
         this.setResizable(false);

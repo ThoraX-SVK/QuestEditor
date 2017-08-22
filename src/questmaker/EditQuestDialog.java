@@ -23,6 +23,7 @@ public class EditQuestDialog extends Dialog implements ActionListener {
     Button addOutput;
     Button setName;
     Button addNewDecision;
+    Button addFunction;
 
     public EditQuestDialog(QuestMainFrame owner, Quest quest) {
         super(owner);
@@ -49,12 +50,15 @@ public class EditQuestDialog extends Dialog implements ActionListener {
         setName.addActionListener(this);
         addNewDecision = new Button("Pridaj nové rozhodnutie");
         addNewDecision.addActionListener(this);
+        addFunction = new Button("Pridaj funkčný blok");
+        addFunction.addActionListener(this);
 
         P.add(addInput);
         P.add(Box.createRigidArea(new Dimension(50, 0)));
         P.add(setName);
         P.add(addNewDecision);
-        P.add(Box.createRigidArea(new Dimension(300, 0)));
+        P.add(addFunction);
+        P.add(Box.createRigidArea(new Dimension(180, 0)));
         P.add(addOutput);
         P.setBackground(Color.BLACK);
         this.add("South", P);
@@ -81,8 +85,10 @@ public class EditQuestDialog extends Dialog implements ActionListener {
             RequestTextDialog rtd = new RequestTextDialog(null, null, 300, 200);
             Decision de = new Decision("", rtd.textArea.getText(), 300, 300, 0, 0, Color.CYAN);
             de.update();
-            quest.decisions.add(de);
+            quest.blocksToDraw.add(de);
             eqdc.repaint();
+        } else if (e.getSource() == addFunction) {
+            ChooseFunctionBlockDialog fuChose = new ChooseFunctionBlockDialog(null,this);
         }
     }
 

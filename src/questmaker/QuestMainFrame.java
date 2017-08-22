@@ -48,10 +48,11 @@ public class QuestMainFrame extends Frame implements ActionListener {
 
         addQuestButton = new Button("Pridaj Quest");
         addQuestButton.addActionListener(this);
-        P.add(addQuestButton);
+        
         addRandomBlock = new Button("Pridaj funkčný blok");
         addRandomBlock.addActionListener(this);
         P.add(addRandomBlock);
+        P.add(addQuestButton);
         P.add(Box.createRigidArea(new Dimension(350, 0)));
         Save = new Button("Uloz");
         Save.addActionListener(this);
@@ -80,7 +81,7 @@ public class QuestMainFrame extends Frame implements ActionListener {
         } else if (e.getSource() == addRandomBlock) {
             
 
-              ChooseFunctionBlockDialog fuChose = new ChooseFunctionBlockDialog(this);
+              ChooseFunctionBlockDialog fuChose = new ChooseFunctionBlockDialog(this,null);
               
 
         }
